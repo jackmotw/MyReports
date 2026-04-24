@@ -12,6 +12,10 @@ from PIL import Image
 import json
 import time
 import argparse
+import re
+import warnings
+import contextlib
+import io
 
 # 設定支援中文的字體 (適用於 Windows)
 mpl.rcParams['font.sans-serif'] = ['Microsoft JhengHei']
