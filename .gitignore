@@ -1,0 +1,13 @@
+.ssh/
+*.json
+*.xlsx
+*.txt
+*.bat
+page_content.html
+__pycache__/
+.env
+.antigravityignore
+!docs/
+!docs/**/*.html
+!docs/**/*.png
+!docs/**/*.json

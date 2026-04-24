@@ -1,0 +1,1036 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>股票起漲點監控儀表板</title>
+        <style>
+            body { font-family: "Microsoft JhengHei", sans-serif; background: #f4f7f6; margin: 20px; }
+            .container { width: 100%; max-width: 1700px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+            h1 { color: #2c3e50; text-align: center; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; table-layout: fixed; word-wrap: break-word; }
+            th, td { padding: 10px; text-align: left; border-bottom: 1px solid #eee; vertical-align: middle; }
+            th { background: #f8f9fa; color: #7f8c8d; text-transform: uppercase; font-size: 0.8em; white-space: nowrap; }
+            
+            /* 具體欄位比例，加起來 100% */
+            th:nth-child(1) { width: 4%; }  /*勾選*/
+            th:nth-child(2) { width: 6%; }  /*代號*/
+            th:nth-child(3) { width: 10%; } /*名稱*/
+            th:nth-child(4) { width: 8%; }  /*日期*/
+            th:nth-child(5) { width: 12%; } /*原因*/
+            th:nth-child(6) { width: 5%; }  /*現價*/
+            th:nth-child(7) { width: 5%; }  /*評分*/
+            th:nth-child(8) { width: 10%; } /*量化*/
+            th:nth-child(9) { width: 20%; } /*AI 視覺鑑定*/
+            th:nth-child(10) { width: 20%; } /*圖表預覽*/
+            
+            .score { font-weight: bold; color: #e67e22; font-size: 1.1em; }
+            .status-icon { font-size: 1.1em; filter: grayscale(100%); opacity: 0.3; }
+            .status-icon.pass { filter: grayscale(0%); opacity: 1; }
+            .ai-pass { background: #d4edda; color: #155724; font-weight: bold; padding: 4px 8px; border-radius: 20px; display: inline-block; font-size: 0.8em; }
+            .chart-preview { width: 100%; border-radius: 4px; border: 1px solid #ddd; transition: 0.3s; }
+            .chart-preview:hover { transform: scale(1.02); }
+            .btn-group { margin: 20px 0; display: flex; gap: 15px; align-items: center; position: sticky; top: 0; background: white; padding: 15px 0; z-index: 1000; border-bottom: 1px solid #eee; }
+            .btn-action { padding: 10px 15px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85em; font-weight: bold; width: 300px; }
+            .btn-action:disabled { background: #bdc3c7; cursor: not-allowed; }
+            #status-msg { font-weight: bold; color: #2980b9; }
+            .legend-inline { display: flex; gap: 8px; font-size: 0.8em; background: #fff; padding: 8px 12px; border-radius: 30px; border: 1px solid #e0e6ed; margin-left: auto; }
+            .legend-item { display: flex; align-items: center; gap: 4px; color: #555; white-space: nowrap; }
+            .command-box { margin: 15px 0; padding: 15px; background: #2c3e50; color: #ecf0f1; border-radius: 6px; font-family: 'Consolas', monospace; font-size: 0.9em; display: none; position: relative; }
+            .command-box b { color: #3498db; }
+            .copy-btn { position: absolute; right: 10px; top: 10px; padding: 5px 10px; background: #34495e; color: white; border: 1px solid #555; border-radius: 4px; cursor: pointer; font-size: 11px; }
+            .copy-btn:hover { background: #3498db; }
+            /* 新增格式優化 */
+            td.reason-col { white-space: pre-wrap; font-size: 0.85em; line-height: 1.4; }
+            td.date-col { white-space: nowrap; font-family: 'Consolas', monospace; font-size: 0.85em; }
+        </style>
+        <script>
+            function selectAll(master) {
+                const checkboxes = document.querySelectorAll('input[name="select-stock"]');
+                checkboxes.forEach(cb => cb.checked = master.checked);
+                updateCommand();
+            }
+
+            function updateCommand() {
+                const checked = Array.from(document.querySelectorAll('input[name="select-stock"]:checked')).map(el => el.value);
+                const box = document.getElementById('cmd-box');
+                const text = document.getElementById('cmd-text');
+                if (checked.length > 0) {
+                    box.style.display = 'block';
+                    text.innerText = `& "C:\\ProgramData\\anaconda3\\envs\\antigravity_project\\python.exe" find_breakouts.py --analyze ${checked.join(',')}`;
+                } else {
+                    box.style.display = 'none';
+                }
+            }
+
+            function copyCmd() {
+                const text = document.getElementById('cmd-text').innerText;
+                navigator.clipboard.writeText(text);
+                alert('指令已複製！請貼到終端機執行。');
+            }
+
+            async function runAnalysis() {
+                const checked = Array.from(document.querySelectorAll('input[name="select-stock"]:checked')).map(el => el.value);
+                if (checked.length === 0) { alert('請先勾選標的'); return; }
+                
+                const btn = document.getElementById('btn-run');
+                const status = document.getElementById('status-msg');
+                btn.disabled = true;
+                status.innerText = "⏳ AI 診斷執行中，請稍候...";
+                
+                try {
+                    const resp = await fetch('/run_ai', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ symbols: checked.join(',') })
+                    });
+                    const res = await resp.json();
+                    if (res.success) {
+                        status.innerText = "✅ 執行完成！正在重新整理...";
+                        setTimeout(() => location.reload(), 1500);
+                    } else {
+                        alert('執行錯誤: ' + res.error);
+                        btn.disabled = false;
+                        status.innerText = "";
+                    }
+                } catch (e) {
+                    alert('後端連線失敗，請確保程式已運行 --serve 模式');
+                    btn.disabled = false;
+                    status.innerText = "";
+                }
+            }
+
+            async function addToWatchlist(symbol, details, btn) {
+                const today = new Date().toISOString().split('T')[0];
+                try {
+                    const resp = await fetch('/add_to_watchlist', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ symbol, date: today, details })
+                    });
+                    const res = await resp.json();
+                    if (res.success) {
+                        btn.innerText = '✅ 已加入';
+                        btn.style.background = '#27ae60';
+                        btn.disabled = true;
+                    } else {
+                        alert('加入失敗');
+                    }
+                } catch (e) {
+                    alert('連線失敗，請確保程式已運行 --serve 模式');
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div class="container">
+            <h1>🚀 雙引擎起漲點偵測儀表板</h1>
+            <p style="text-align:center; color: #7f8c8d;">最後更新時間: 2026-04-23 22:40:08</p>
+            
+            <div class="btn-group">
+                <button id="btn-run" class="btn-action" onclick="runAnalysis()">一鍵 AI 診斷</button>
+                <span id="status-msg"></span>
+                
+                <div class="legend-inline">
+                    <div class="legend-item">💰 獲利</div>
+                    <div class="legend-item">👤 內部持股</div>
+                    <div class="legend-item">📈 營收雙增</div>
+                    <div class="legend-item">⚙️ 營益成長</div>
+                    <div class="legend-item">📉 散戶退場</div>
+                    <div class="legend-item">🐳 大戶卡位</div>
+                </div>
+            </div>
+
+            <div id="cmd-box" class="command-box">
+                <button class="copy-btn" onclick="copyCmd()">點此複製</button>
+                <b>[手動模式指令]</b><br>
+                <span id="cmd-text"></span>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" onclick="selectAll(this)"> 全選</th>
+                        <th>代號</th>
+                        <th>股票名稱</th>
+                        <th>加入日期</th>
+                        <th>加入原因 / 評級</th>
+                        <th>現價</th>
+                        <th>評分</th>
+                        <th>量化指標狀態</th>
+                        <th>AI 視覺鑑定</th>
+                        <th>圖表預覽</th>
+                    </tr>
+                </thead>
+                <tbody>
+    
+            <tr>
+                <td><input type="checkbox" name="select-stock" value="6197" onchange="updateCommand()"></td>
+                <td>6197</td>
+                <td style="font-weight:bold; white-space:nowrap;">佳必琪</td>
+                <td class="date-col">2026-02-27</td>
+                <td class="reason-col">均線糾結 & 長期盤整</td>
+                <td>187.50</td>
+                <td class="score">7</td>
+                <td>
+            <span class="status-icon pass" title="獲利 (EPS > 0)">💰</span>
+            <span class="status-icon pass" title="內部人持股">👤</span>
+            <span class="status-icon pass" title="營收雙增 (YoY/MoM)">📈</span>
+            <span class="status-icon pass" title="營益率成長">⚙️</span>
+            <span class="status-icon pass" title="股東人數減少 (散戶退場)">📉</span>
+            <span class="status-icon pass" title="大戶持股增加">🐳</span>
+        </td>
+                <td>
+                <div class='ai-pass' style='background: #fff3cd'>診斷中 (條件未全過)</div>
+                <div style='font-size: 13px; margin-top: 8px;'>
+                    <span style='font-size: 11px; color: #7f8c8d;'>🕒 N/A</span><br>
+                    <b>🎯 信心程度: 55%</b><br>
+                    <b>💡 專家建議:</b> 該股具備長期盤整後均線糾結的發動潛力，且近期出現帶量突破的跡象。然而，最新一根K線為實體紅K，且收盤價未能站穩5日均線，顯示短期有獲利了結賣壓或拉回風險。建議暫時觀望，待股價再次明確站穩各短期均線後再考慮進場，以降低風險。<br>
+                    <hr style='border: 0.5px solid #eee; margin: 8px 0;'>
+                    <div style='font-size: 11px; color: #666;'>
+                        均線糾結: ✅<br>長期盤整: ✅<br>帶量突破: ✅<br>站上均線: ❌
+                    </div>
+                </div>
+            </td>
+                <td>
+                    <button class="btn-action" style="padding: 8px 12px; font-size: 0.8em; margin-bottom: 5px; width: 100%;" 
+                            onclick="addToWatchlist('6197', '均線糾結 & 長期盤整 & 帶量突破', this)">
+                        加入觀察清單
+                    </button>
+                    <a href="breakout_charts/6197_kline.png" target="_blank">
+                        <img class="chart-preview" src="breakout_charts/6197_kline.png?t=1776951608" style="width: 100%;">
+                    </a>
+                </td>
+            </tr>
+        
+            <tr>
+                <td><input type="checkbox" name="select-stock" value="6672" onchange="updateCommand()"></td>
+                <td>6672</td>
+                <td style="font-weight:bold; white-space:nowrap;">騰輝電子-KY</td>
+                <td class="date-col">2026-03-02</td>
+                <td class="reason-col">今天先入袋為安，等未來跌下來到季線再進場一次</td>
+                <td>191.50</td>
+                <td class="score">7</td>
+                <td>
+            <span class="status-icon pass" title="獲利 (EPS > 0)">💰</span>
+            <span class="status-icon pass" title="內部人持股">👤</span>
+            <span class="status-icon pass" title="營收雙增 (YoY/MoM)">📈</span>
+            <span class="status-icon pass" title="營益率成長">⚙️</span>
+            <span class="status-icon pass" title="股東人數減少 (散戶退場)">📉</span>
+            <span class="status-icon pass" title="大戶持股增加">🐳</span>
+        </td>
+                <td>
+                <div class='ai-pass' style='background: #fff3cd'>診斷中 (條件未全過)</div>
+                <div style='font-size: 13px; margin-top: 8px;'>
+                    <span style='font-size: 11px; color: #7f8c8d;'>🕒 N/A</span><br>
+                    <b>🎯 信心程度: 25%</b><br>
+                    <b>💡 專家建議:</b> 目前未見明確買入訊號。最新 K 線收黑且未站上 5MA，量能也未見突破。雖然均線糾結可能預示變盤，但方向不明，建議觀望。<br>
+                    <hr style='border: 0.5px solid #eee; margin: 8px 0;'>
+                    <div style='font-size: 11px; color: #666;'>
+                        均線糾結: ✅<br>長期盤整: ✅<br>帶量突破: ❌<br>站上均線: ❌
+                    </div>
+                </div>
+            </td>
+                <td>
+                    <button class="btn-action" style="padding: 8px 12px; font-size: 0.8em; margin-bottom: 5px; width: 100%;" 
+                            onclick="addToWatchlist('6672', '均線糾結 & 長期盤整', this)">
+                        加入觀察清單
+                    </button>
+                    <a href="breakout_charts/6672_kline.png" target="_blank">
+                        <img class="chart-preview" src="breakout_charts/6672_kline.png?t=1776951608" style="width: 100%;">
+                    </a>
+                </td>
+            </tr>
+        
+            <tr>
+                <td><input type="checkbox" name="select-stock" value="7717" onchange="updateCommand()"></td>
+                <td>7717</td>
+                <td style="font-weight:bold; white-space:nowrap;">萊德光電-KY</td>
+                <td class="date-col">2026-03-02</td>
+                <td class="reason-col">張文赫，低軌衛星概念股</td>
+                <td>796.00</td>
+                <td class="score">7</td>
+                <td>
+            <span class="status-icon pass" title="獲利 (EPS > 0)">💰</span>
+            <span class="status-icon pass" title="內部人持股">👤</span>
+            <span class="status-icon pass" title="營收雙增 (YoY/MoM)">📈</span>
+            <span class="status-icon pass" title="營益率成長">⚙️</span>
+            <span class="status-icon pass" title="股東人數減少 (散戶退場)">📉</span>
+            <span class="status-icon pass" title="大戶持股增加">🐳</span>
+        </td>
+                <td>
+                <div class='ai-pass' style='background: #fff3cd'>診斷中 (條件未全過)</div>
+                <div style='font-size: 13px; margin-top: 8px;'>
+                    <span style='font-size: 11px; color: #7f8c8d;'>🕒 N/A</span><br>
+                    <b>🎯 信心程度: 10%</b><br>
+                    <b>💡 專家建議:</b> 目前均線未糾結，未見帶量突破訊號，且最新K棒收盤價跌破5日均線，不符合買入條件，建議觀望。<br>
+                    <hr style='border: 0.5px solid #eee; margin: 8px 0;'>
+                    <div style='font-size: 11px; color: #666;'>
+                        均線糾結: ❌<br>長期盤整: ❌<br>帶量突破: ❌<br>站上均線: ❌
+                    </div>
+                </div>
+            </td>
+                <td>
+                    <button class="btn-action" style="padding: 8px 12px; font-size: 0.8em; margin-bottom: 5px; width: 100%;" 
+                            onclick="addToWatchlist('7717', '均線糾結: ❌\n長期盤整: ❌\n帶量突破: ❌\n站上均線: ❌\n💡 專家建議: 目前均線未糾結，未見帶量突破訊號，且最新K棒收盤價跌破5日均線，不符合買入條件，建議觀望。', this)">
+                        加入觀察清單
+                    </button>
+                    <a href="breakout_charts/7717_kline.png" target="_blank">
+                        <img class="chart-preview" src="breakout_charts/7717_kline.png?t=1776951608" style="width: 100%;">
+                    </a>
+                </td>
+            </tr>
+        
+            <tr>
+                <td><input type="checkbox" name="select-stock" value="3138" onchange="updateCommand()"></td>
+                <td>3138</td>
+                <td style="font-weight:bold; white-space:nowrap;">耀登</td>
+                <td class="date-col">2026-03-02</td>
+                <td class="reason-col">張文赫，低軌衛星概念股</td>
+                <td>173.50</td>
+                <td class="score">7</td>
+                <td>
+            <span class="status-icon pass" title="獲利 (EPS > 0)">💰</span>
+            <span class="status-icon pass" title="內部人持股">👤</span>
+            <span class="status-icon pass" title="營收雙增 (YoY/MoM)">📈</span>
+            <span class="status-icon pass" title="營益率成長">⚙️</span>
+            <span class="status-icon pass" title="股東人數減少 (散戶退場)">📉</span>
+            <span class="status-icon pass" title="大戶持股增加">🐳</span>
+        </td>
+                <td>
+                <div class='ai-pass' style='background: #fff3cd'>診斷中 (條件未全過)</div>
+                <div style='font-size: 13px; margin-top: 8px;'>
+                    <span style='font-size: 11px; color: #7f8c8d;'>🕒 N/A</span><br>
+                    <b>🎯 信心程度: 35%</b><br>
+                    <b>💡 專家建議:</b> 儘管前期出現長期盤整並帶動一波漲勢，但近期股價正經歷短期回檔，最新K線未能站上5日均線且其成交量並非顯著突破，均線也未呈現糾結蓄勢。建議暫時觀望，待股價止跌回穩並出現明確的買入訊號後再考慮進場。<br>
+                    <hr style='border: 0.5px solid #eee; margin: 8px 0;'>
+                    <div style='font-size: 11px; color: #666;'>
+                        均線糾結: ❌<br>長期盤整: ✅<br>帶量突破: ❌<br>站上均線: ❌
+                    </div>
+                </div>
+            </td>
+                <td>
+                    <button class="btn-action" style="padding: 8px 12px; font-size: 0.8em; margin-bottom: 5px; width: 100%;" 
+                            onclick="addToWatchlist('3138', '均線糾結: ❌\n長期盤整: ✅\n帶量突破: ❌\n站上均線: ❌\n💡 專家建議: 儘管前期出現長期盤整並帶動一波漲勢，但近期股價正經歷短期回檔，最新K線未能站上5日均線且其成交量並非顯著突破，均線也未呈現糾結蓄勢。建議暫時觀望，待股價止跌回穩並出現明確的買入訊號後再考慮進場。', this)">
+                        加入觀察清單
+                    </button>
+                    <a href="breakout_charts/3138_kline.png" target="_blank">
+                        <img class="chart-preview" src="breakout_charts/3138_kline.png?t=1776951608" style="width: 100%;">
+                    </a>
+                </td>
+            </tr>
+        
+            <tr>
+                <td><input type="checkbox" name="select-stock" value="3006" onchange="updateCommand()"></td>
+                <td>3006</td>
+                <td style="font-weight:bold; white-space:nowrap;">晶豪科</td>
+                <td class="date-col">2026-03-02</td>
+                <td class="reason-col">V哥，記憶體概念股</td>
+                <td>155.50</td>
+                <td class="score">7</td>
+                <td>
+            <span class="status-icon pass" title="獲利 (EPS > 0)">💰</span>
+            <span class="status-icon pass" title="內部人持股">👤</span>
+            <span class="status-icon pass" title="營收雙增 (YoY/MoM)">📈</span>
+            <span class="status-icon pass" title="營益率成長">⚙️</span>
+            <span class="status-icon pass" title="股東人數減少 (散戶退場)">📉</span>
+            <span class="status-icon pass" title="大戶持股增加">🐳</span>
+        </td>
+                <td>
+                <div class='ai-pass' style='background: #fff3cd'>診斷中 (條件未全過)</div>
+                <div style='font-size: 13px; margin-top: 8px;'>
+                    <span style='font-size: 11px; color: #7f8c8d;'>🕒 N/A</span><br>
+                    <b>🎯 信心程度: 35%</b><br>
+                    <b>💡 專家建議:</b> 均線呈現糾結且帶量，暗示未來可能出現大幅波動。然而，最新K線為紅K且未能站穩5MA，顯示短線動能不足或有獲利了結壓力，建議暫時觀望，待方向明確再做判斷。<br>
+                    <hr style='border: 0.5px solid #eee; margin: 8px 0;'>
+                    <div style='font-size: 11px; color: #666;'>
+                        均線糾結: ✅<br>長期盤整: ✅<br>帶量突破: ✅<br>站上均線: ❌
+                    </div>
+                </div>
+            </td>
+                <td>
+                    <button class="btn-action" style="padding: 8px 12px; font-size: 0.8em; margin-bottom: 5px; width: 100%;" 
+                            onclick="addToWatchlist('3006', '均線糾結 & 長期盤整 & 帶量突破', this)">
+                        加入觀察清單
+                    </button>
+                    <a href="breakout_charts/3006_kline.png" target="_blank">
+                        <img class="chart-preview" src="breakout_charts/3006_kline.png?t=1776951608" style="width: 100%;">
+                    </a>
+                </td>
+            </tr>
+        
+            <tr>
+                <td><input type="checkbox" name="select-stock" value="6291" onchange="updateCommand()"></td>
+                <td>6291</td>
+                <td style="font-weight:bold; white-space:nowrap;">沛亨</td>
+                <td class="date-col">2026-03-02</td>
+                <td class="reason-col">V哥，康寧概念股，會陷入一段時間整理</td>
+                <td>455.50</td>
+                <td class="score">7</td>
+                <td>
+            <span class="status-icon pass" title="獲利 (EPS > 0)">💰</span>
+            <span class="status-icon pass" title="內部人持股">👤</span>
+            <span class="status-icon pass" title="營收雙增 (YoY/MoM)">📈</span>
+            <span class="status-icon pass" title="營益率成長">⚙️</span>
+            <span class="status-icon pass" title="股東人數減少 (散戶退場)">📉</span>
+            <span class="status-icon pass" title="大戶持股增加">🐳</span>
+        </td>
+                <td>
+                <div class='ai-pass' style='background: #fff3cd'>診斷中 (條件未全過)</div>
+                <div style='font-size: 13px; margin-top: 8px;'>
+                    <span style='font-size: 11px; color: #7f8c8d;'>🕒 N/A</span><br>
+                    <b>🎯 信心程度: 80%</b><br>
+                    <b>💡 專家建議:</b> 股價處於強勁上升趨勢，近期在均線支撐處帶量反彈並站上5MA，顯示多頭力道強勁，建議買入。<br>
+                    <hr style='border: 0.5px solid #eee; margin: 8px 0;'>
+                    <div style='font-size: 11px; color: #666;'>
+                        均線糾結: ❌<br>長期盤整: ❌<br>帶量突破: ✅<br>站上均線: ✅
+                    </div>
+                </div>
+            </td>
+                <td>
+                    <button class="btn-action" style="padding: 8px 12px; font-size: 0.8em; margin-bottom: 5px; width: 100%;" 
+                            onclick="addToWatchlist('6291', '均線糾結: ❌\n長期盤整: ❌\n帶量突破: ✅\n站上均線: ✅\n💡 專家建議: 股價處於強勁上升趨勢，近期在均線支撐處帶量反彈並站上5MA，顯示多頭力道強勁，建議買入。', this)">
+                        加入觀察清單
+                    </button>
+                    <a href="breakout_charts/6291_kline.png" target="_blank">
+                        <img class="chart-preview" src="breakout_charts/6291_kline.png?t=1776951608" style="width: 100%;">
+                    </a>
+                </td>
+            </tr>
+        
+            <tr>
+                <td><input type="checkbox" name="select-stock" value="3081" onchange="updateCommand()"></td>
+                <td>3081</td>
+                <td style="font-weight:bold; white-space:nowrap;">聯亞</td>
+                <td class="date-col">2026-03-02</td>
+                <td class="reason-col">V哥，太空概念股，銦概念股</td>
+                <td>3020.00</td>
+                <td class="score">7</td>
+                <td>
+            <span class="status-icon pass" title="獲利 (EPS > 0)">💰</span>
+            <span class="status-icon pass" title="內部人持股">👤</span>
+            <span class="status-icon pass" title="營收雙增 (YoY/MoM)">📈</span>
+            <span class="status-icon pass" title="營益率成長">⚙️</span>
+            <span class="status-icon pass" title="股東人數減少 (散戶退場)">📉</span>
+            <span class="status-icon pass" title="大戶持股增加">🐳</span>
+        </td>
+                <td>
+                <div class='ai-pass' style='background: #fff3cd'>診斷中 (條件未全過)</div>
+                <div style='font-size: 13px; margin-top: 8px;'>
+                    <span style='font-size: 11px; color: #7f8c8d;'>🕒 N/A</span><br>
+                    <b>🎯 信心程度: 20%</b><br>
+                    <b>💡 專家建議:</b> 該股已脫離長期盤整區間並大幅上漲，但最新 K 線為高量下跌紅 K 棒，且收盤價已跌破 5 日均線。這顯示短期內有強勁獲利了結賣壓，股價可能進入修正，不建議此刻買入。<br>
+                    <hr style='border: 0.5px solid #eee; margin: 8px 0;'>
+                    <div style='font-size: 11px; color: #666;'>
+                        均線糾結: ❌<br>長期盤整: ✅<br>帶量突破: ❌<br>站上均線: ❌
+                    </div>
+                </div>
+            </td>
+                <td>
+                    <button class="btn-action" style="padding: 8px 12px; font-size: 0.8em; margin-bottom: 5px; width: 100%;" 
+                            onclick="addToWatchlist('3081', '均線糾結: ❌\n長期盤整: ✅\n帶量突破: ❌\n站上均線: ❌\n💡 專家建議: 該股已脫離長期盤整區間並大幅上漲，但最新 K 線為高量下跌紅 K 棒，且收盤價已跌破 5 日均線。這顯示短期內有強勁獲利了結賣壓，股價可能進入修正，不建議此刻買入。', this)">
+                        加入觀察清單
+                    </button>
+                    <a href="breakout_charts/3081_kline.png" target="_blank">
+                        <img class="chart-preview" src="breakout_charts/3081_kline.png?t=1776951608" style="width: 100%;">
+                    </a>
+                </td>
+            </tr>
+        
+            <tr>
+                <td><input type="checkbox" name="select-stock" value="3324" onchange="updateCommand()"></td>
+                <td>3324</td>
+                <td style="font-weight:bold; white-space:nowrap;">雙鴻</td>
+                <td class="date-col"></td>
+                <td class="reason-col">初步觀察名單 (Preliminary)</td>
+                <td>1105.00</td>
+                <td class="score">7</td>
+                <td>
+            <span class="status-icon pass" title="獲利 (EPS > 0)">💰</span>
+            <span class="status-icon pass" title="內部人持股">👤</span>
+            <span class="status-icon pass" title="營收雙增 (YoY/MoM)">📈</span>
+            <span class="status-icon pass" title="營益率成長">⚙️</span>
+            <span class="status-icon pass" title="股東人數減少 (散戶退場)">📉</span>
+            <span class="status-icon pass" title="大戶持股增加">🐳</span>
+        </td>
+                <td></td>
+                <td>
+                    <button class="btn-action" style="padding: 8px 12px; font-size: 0.8em; margin-bottom: 5px; width: 100%;" 
+                            onclick="addToWatchlist('3324', '初步觀察名單 (Preliminary)', this)">
+                        加入觀察清單
+                    </button>
+                    <a href="breakout_charts/3324_kline.png" target="_blank">
+                        <img class="chart-preview" src="breakout_charts/3324_kline.png?t=1776951608" style="width: 100%;">
+                    </a>
+                </td>
+            </tr>
+        
+            <tr>
+                <td><input type="checkbox" name="select-stock" value="7711" onchange="updateCommand()"></td>
+                <td>7711</td>
+                <td style="font-weight:bold; white-space:nowrap;">永擎</td>
+                <td class="date-col"></td>
+                <td class="reason-col">初步觀察名單 (Preliminary)</td>
+                <td>372.00</td>
+                <td class="score">7</td>
+                <td>
+            <span class="status-icon pass" title="獲利 (EPS > 0)">💰</span>
+            <span class="status-icon pass" title="內部人持股">👤</span>
+            <span class="status-icon pass" title="營收雙增 (YoY/MoM)">📈</span>
+            <span class="status-icon pass" title="營益率成長">⚙️</span>
+            <span class="status-icon pass" title="股東人數減少 (散戶退場)">📉</span>
+            <span class="status-icon pass" title="大戶持股增加">🐳</span>
+        </td>
+                <td></td>
+                <td>
+                    <button class="btn-action" style="padding: 8px 12px; font-size: 0.8em; margin-bottom: 5px; width: 100%;" 
+                            onclick="addToWatchlist('7711', '初步觀察名單 (Preliminary)', this)">
+                        加入觀察清單
+                    </button>
+                    <a href="breakout_charts/7711_kline.png" target="_blank">
+                        <img class="chart-preview" src="breakout_charts/7711_kline.png?t=1776951608" style="width: 100%;">
+                    </a>
+                </td>
+            </tr>
+        
+            <tr>
+                <td><input type="checkbox" name="select-stock" value="2010" onchange="updateCommand()"></td>
+                <td>2010</td>
+                <td style="font-weight:bold; white-space:nowrap;">春源</td>
+                <td class="date-col">2026-02-11</td>
+                <td class="reason-col">Radio said steel price will go up gradually</td>
+                <td>24.60</td>
+                <td class="score">6</td>
+                <td>
+            <span class="status-icon pass" title="獲利 (EPS > 0)">💰</span>
+            <span class="status-icon pass" title="內部人持股">👤</span>
+            <span class="status-icon " title="營收雙增 (YoY/MoM)">📈</span>
+            <span class="status-icon pass" title="營益率成長">⚙️</span>
+            <span class="status-icon pass" title="股東人數減少 (散戶退場)">📉</span>
+            <span class="status-icon pass" title="大戶持股增加">🐳</span>
+        </td>
+                <td>
+                <div class='ai-pass' style='background: #fff3cd'>診斷中 (條件未全過)</div>
+                <div style='font-size: 13px; margin-top: 8px;'>
+                    <span style='font-size: 11px; color: #7f8c8d;'>🕒 N/A</span><br>
+                    <b>🎯 信心程度: 40%</b><br>
+                    <b>💡 專家建議:</b> 目前股價正處於回檔整理，未見帶量突破或站上均線的積極訊號。建議觀望，等待股價止穩或出現新的買入訊號再考慮介入。<br>
+                    <hr style='border: 0.5px solid #eee; margin: 8px 0;'>
+                    <div style='font-size: 11px; color: #666;'>
+                        均線糾結: ❌<br>長期盤整: ✅<br>帶量突破: ❌<br>站上均線: ❌
+                    </div>
+                </div>
+            </td>
+                <td>
+                    <button class="btn-action" style="padding: 8px 12px; font-size: 0.8em; margin-bottom: 5px; width: 100%;" 
+                            onclick="addToWatchlist('2010', '均線糾結: ❌\n長期盤整: ✅\n帶量突破: ❌\n站上均線: ❌\n💡 專家建議: 目前股價正處於回檔整理，未見帶量突破或站上均線的積極訊號。建議觀望，等待股價止穩或出現新的買入訊號再考慮介入。', this)">
+                        加入觀察清單
+                    </button>
+                    <a href="breakout_charts/2010_kline.png" target="_blank">
+                        <img class="chart-preview" src="breakout_charts/2010_kline.png?t=1776951608" style="width: 100%;">
+                    </a>
+                </td>
+            </tr>
+        
+            <tr>
+                <td><input type="checkbox" name="select-stock" value="2355" onchange="updateCommand()"></td>
+                <td>2355</td>
+                <td style="font-weight:bold; white-space:nowrap;">敬鵬</td>
+                <td class="date-col">2026-02-25</td>
+                <td class="reason-col">MyReports 轉強標的</td>
+                <td>50.40</td>
+                <td class="score">6</td>
+                <td>
+            <span class="status-icon pass" title="獲利 (EPS > 0)">💰</span>
+            <span class="status-icon pass" title="內部人持股">👤</span>
+            <span class="status-icon " title="營收雙增 (YoY/MoM)">📈</span>
+            <span class="status-icon pass" title="營益率成長">⚙️</span>
+            <span class="status-icon pass" title="股東人數減少 (散戶退場)">📉</span>
+            <span class="status-icon pass" title="大戶持股增加">🐳</span>
+        </td>
+                <td>
+                <div class='ai-pass' style='background: #fff3cd'>診斷中 (條件未全過)</div>
+                <div style='font-size: 13px; margin-top: 8px;'>
+                    <span style='font-size: 11px; color: #7f8c8d;'>🕒 N/A</span><br>
+                    <b>🎯 信心程度: 85%</b><br>
+                    <b>💡 專家建議:</b> 股價在長期盤整後帶量向上突破，均線呈現多頭排列，顯示強勁上升趨勢。雖然最新K線呈現短線獲利了結壓力，但收盤仍站穩5日均線之上，後市仍有上漲空間，建議可考慮買入。<br>
+                    <hr style='border: 0.5px solid #eee; margin: 8px 0;'>
+                    <div style='font-size: 11px; color: #666;'>
+                        均線糾結: ❌<br>長期盤整: ✅<br>帶量突破: ✅<br>站上均線: ✅
+                    </div>
+                </div>
+            </td>
+                <td>
+                    <button class="btn-action" style="padding: 8px 12px; font-size: 0.8em; margin-bottom: 5px; width: 100%;" 
+                            onclick="addToWatchlist('2355', '均線糾結: ❌\n長期盤整: ✅\n帶量突破: ✅\n站上均線: ✅\n💡 專家建議: 股價在長期盤整後帶量向上突破，均線呈現多頭排列，顯示強勁上升趨勢。雖然最新K線呈現短線獲利了結壓力，但收盤仍站穩5日均線之上，後市仍有上漲空間，建議可考慮買入。', this)">
+                        加入觀察清單
+                    </button>
+                    <a href="breakout_charts/2355_kline.png" target="_blank">
+                        <img class="chart-preview" src="breakout_charts/2355_kline.png?t=1776951608" style="width: 100%;">
+                    </a>
+                </td>
+            </tr>
+        
+            <tr>
+                <td><input type="checkbox" name="select-stock" value="2645" onchange="updateCommand()"></td>
+                <td>2645</td>
+                <td style="font-weight:bold; white-space:nowrap;">EVERGREEN AVIATION TECHNOLOGIES</td>
+                <td class="date-col">2026-02-25</td>
+                <td class="reason-col">Someone said it's good but I forgot who</td>
+                <td>165.50</td>
+                <td class="score">6</td>
+                <td>
+            <span class="status-icon pass" title="獲利 (EPS > 0)">💰</span>
+            <span class="status-icon pass" title="內部人持股">👤</span>
+            <span class="status-icon pass" title="營收雙增 (YoY/MoM)">📈</span>
+            <span class="status-icon pass" title="營益率成長">⚙️</span>
+            <span class="status-icon pass" title="股東人數減少 (散戶退場)">📉</span>
+            <span class="status-icon pass" title="大戶持股增加">🐳</span>
+        </td>
+                <td>
+                <div class='ai-pass' style='background: #fff3cd'>診斷中 (條件未全過)</div>
+                <div style='font-size: 13px; margin-top: 8px;'>
+                    <span style='font-size: 11px; color: #7f8c8d;'>🕒 N/A</span><br>
+                    <b>🎯 信心程度: 30%</b><br>
+                    <b>💡 專家建議:</b> 雖然均線糾結與長期盤整顯示市場可能在醞釀方向，但最新 K 線為帶量不足的紅 K，且收盤價未能站上 5 日均線，短期上漲動能不足。建議投資人保持觀望，等待股價出現更明確的帶量突破訊號，例如實體紅 K 站穩所有短期均線，方可考慮介入。<br>
+                    <hr style='border: 0.5px solid #eee; margin: 8px 0;'>
+                    <div style='font-size: 11px; color: #666;'>
+                        均線糾結: ✅<br>長期盤整: ✅<br>帶量突破: ❌<br>站上均線: ❌
+                    </div>
+                </div>
+            </td>
+                <td>
+                    <button class="btn-action" style="padding: 8px 12px; font-size: 0.8em; margin-bottom: 5px; width: 100%;" 
+                            onclick="addToWatchlist('2645', '均線糾結 & 長期盤整', this)">
+                        加入觀察清單
+                    </button>
+                    <a href="breakout_charts/2645_kline.png" target="_blank">
+                        <img class="chart-preview" src="breakout_charts/2645_kline.png?t=1776951608" style="width: 100%;">
+                    </a>
+                </td>
+            </tr>
+        
+            <tr>
+                <td><input type="checkbox" name="select-stock" value="6862" onchange="updateCommand()"></td>
+                <td>6862</td>
+                <td style="font-weight:bold; white-space:nowrap;">三集瑞-KY</td>
+                <td class="date-col">2026-02-26</td>
+                <td class="reason-col">MyReports 轉強標的</td>
+                <td>172.50</td>
+                <td class="score">6</td>
+                <td>
+            <span class="status-icon pass" title="獲利 (EPS > 0)">💰</span>
+            <span class="status-icon pass" title="內部人持股">👤</span>
+            <span class="status-icon " title="營收雙增 (YoY/MoM)">📈</span>
+            <span class="status-icon pass" title="營益率成長">⚙️</span>
+            <span class="status-icon pass" title="股東人數減少 (散戶退場)">📉</span>
+            <span class="status-icon pass" title="大戶持股增加">🐳</span>
+        </td>
+                <td>
+                <div class='ai-pass' style='background: #fff3cd'>診斷中 (條件未全過)</div>
+                <div style='font-size: 13px; margin-top: 8px;'>
+                    <span style='font-size: 11px; color: #7f8c8d;'>🕒 N/A</span><br>
+                    <b>🎯 信心程度: 20%</b><br>
+                    <b>💡 專家建議:</b> 雖然有長期盤整跡象，但近期均線並未糾結，最新K線為紅棒且收盤價未站上5MA，量能也未見顯著突起，目前缺乏明確買入訊號，建議繼續觀望。<br>
+                    <hr style='border: 0.5px solid #eee; margin: 8px 0;'>
+                    <div style='font-size: 11px; color: #666;'>
+                        均線糾結: ❌<br>長期盤整: ✅<br>帶量突破: ❌<br>站上均線: ❌
+                    </div>
+                </div>
+            </td>
+                <td>
+                    <button class="btn-action" style="padding: 8px 12px; font-size: 0.8em; margin-bottom: 5px; width: 100%;" 
+                            onclick="addToWatchlist('6862', '均線糾結: ❌\n長期盤整: ✅\n帶量突破: ❌\n站上均線: ❌\n💡 專家建議: 雖然有長期盤整跡象，但近期均線並未糾結，最新K線為紅棒且收盤價未站上5MA，量能也未見顯著突起，目前缺乏明確買入訊號，建議繼續觀望。', this)">
+                        加入觀察清單
+                    </button>
+                    <a href="breakout_charts/6862_kline.png" target="_blank">
+                        <img class="chart-preview" src="breakout_charts/6862_kline.png?t=1776951608" style="width: 100%;">
+                    </a>
+                </td>
+            </tr>
+        
+            <tr>
+                <td><input type="checkbox" name="select-stock" value="2344" onchange="updateCommand()"></td>
+                <td>2344</td>
+                <td style="font-weight:bold; white-space:nowrap;">華邦電</td>
+                <td class="date-col">2026-03-02</td>
+                <td class="reason-col">V哥，記憶體概念股</td>
+                <td>87.80</td>
+                <td class="score">6</td>
+                <td>
+            <span class="status-icon pass" title="獲利 (EPS > 0)">💰</span>
+            <span class="status-icon pass" title="內部人持股">👤</span>
+            <span class="status-icon pass" title="營收雙增 (YoY/MoM)">📈</span>
+            <span class="status-icon pass" title="營益率成長">⚙️</span>
+            <span class="status-icon pass" title="股東人數減少 (散戶退場)">📉</span>
+            <span class="status-icon pass" title="大戶持股增加">🐳</span>
+        </td>
+                <td>
+                <div class='ai-pass' style='background: #fff3cd'>診斷中 (條件未全過)</div>
+                <div style='font-size: 13px; margin-top: 8px;'>
+                    <span style='font-size: 11px; color: #7f8c8d;'>🕒 N/A</span><br>
+                    <b>🎯 信心程度: 60%</b><br>
+                    <b>💡 專家建議:</b> 最新K線帶量站上短期均線，顯示短線有止跌回穩跡象。然而，由於缺乏長期盤整和均線糾結的發動訊號，不具備經典的起漲點特徵。雖然短線動能回升，但仍需謹慎，建議觀察後續走勢或小量嘗試，並嚴格設定停損點。<br>
+                    <hr style='border: 0.5px solid #eee; margin: 8px 0;'>
+                    <div style='font-size: 11px; color: #666;'>
+                        均線糾結: ❌<br>長期盤整: ❌<br>帶量突破: ✅<br>站上均線: ✅
+                    </div>
+                </div>
+            </td>
+                <td>
+                    <button class="btn-action" style="padding: 8px 12px; font-size: 0.8em; margin-bottom: 5px; width: 100%;" 
+                            onclick="addToWatchlist('2344', '均線糾結: ❌\n長期盤整: ❌\n帶量突破: ✅\n站上均線: ✅\n💡 專家建議: 最新K線帶量站上短期均線，顯示短線有止跌回穩跡象。然而，由於缺乏長期盤整和均線糾結的發動訊號，不具備經典的起漲點特徵。雖然短線動能回升，但仍需謹慎，建議觀察後續走勢或小量嘗試，並嚴格設定停損點。', this)">
+                        加入觀察清單
+                    </button>
+                    <a href="breakout_charts/2344_kline.png" target="_blank">
+                        <img class="chart-preview" src="breakout_charts/2344_kline.png?t=1776951608" style="width: 100%;">
+                    </a>
+                </td>
+            </tr>
+        
+            <tr>
+                <td><input type="checkbox" name="select-stock" value="2455" onchange="updateCommand()"></td>
+                <td>2455</td>
+                <td style="font-weight:bold; white-space:nowrap;">全新</td>
+                <td class="date-col">2026-03-02</td>
+                <td class="reason-col">V哥，銦概念股</td>
+                <td>346.00</td>
+                <td class="score">6</td>
+                <td>
+            <span class="status-icon pass" title="獲利 (EPS > 0)">💰</span>
+            <span class="status-icon pass" title="內部人持股">👤</span>
+            <span class="status-icon pass" title="營收雙增 (YoY/MoM)">📈</span>
+            <span class="status-icon pass" title="營益率成長">⚙️</span>
+            <span class="status-icon pass" title="股東人數減少 (散戶退場)">📉</span>
+            <span class="status-icon pass" title="大戶持股增加">🐳</span>
+        </td>
+                <td>
+                <div class='ai-pass' style='background: #fff3cd'>診斷中 (條件未全過)</div>
+                <div style='font-size: 13px; margin-top: 8px;'>
+                    <span style='font-size: 11px; color: #7f8c8d;'>🕒 N/A</span><br>
+                    <b>🎯 信心程度: 85%</b><br>
+                    <b>💡 專家建議:</b> 該股已從長期盤整區間帶量突破，顯示強勁多頭動能，但股價目前嚴重乖離均線且短期漲幅過大，不建議此刻追高，可等待拉回整理或橫盤築底後的進場機會。<br>
+                    <hr style='border: 0.5px solid #eee; margin: 8px 0;'>
+                    <div style='font-size: 11px; color: #666;'>
+                        均線糾結: ❌<br>長期盤整: ✅<br>帶量突破: ✅<br>站上均線: ✅
+                    </div>
+                </div>
+            </td>
+                <td>
+                    <button class="btn-action" style="padding: 8px 12px; font-size: 0.8em; margin-bottom: 5px; width: 100%;" 
+                            onclick="addToWatchlist('2455', '均線糾結: ❌\n長期盤整: ✅\n帶量突破: ✅\n站上均線: ✅\n💡 專家建議: 該股已從長期盤整區間帶量突破，顯示強勁多頭動能，但股價目前嚴重乖離均線且短期漲幅過大，不建議此刻追高，可等待拉回整理或橫盤築底後的進場機會。', this)">
+                        加入觀察清單
+                    </button>
+                    <a href="breakout_charts/2455_kline.png" target="_blank">
+                        <img class="chart-preview" src="breakout_charts/2455_kline.png?t=1776951608" style="width: 100%;">
+                    </a>
+                </td>
+            </tr>
+        
+            <tr>
+                <td><input type="checkbox" name="select-stock" value="6213" onchange="updateCommand()"></td>
+                <td>6213</td>
+                <td style="font-weight:bold; white-space:nowrap;">聯茂</td>
+                <td class="date-col">2026-03-17</td>
+                <td class="reason-col">V哥，銅箔基板，大家去做高階交換機，但一般伺服器反而很多需求</td>
+                <td>274.50</td>
+                <td class="score">6</td>
+                <td>
+            <span class="status-icon pass" title="獲利 (EPS > 0)">💰</span>
+            <span class="status-icon pass" title="內部人持股">👤</span>
+            <span class="status-icon pass" title="營收雙增 (YoY/MoM)">📈</span>
+            <span class="status-icon pass" title="營益率成長">⚙️</span>
+            <span class="status-icon pass" title="股東人數減少 (散戶退場)">📉</span>
+            <span class="status-icon pass" title="大戶持股增加">🐳</span>
+        </td>
+                <td>
+                <div class='ai-pass' style='background: #fff3cd'>診斷中 (條件未全過)</div>
+                <div style='font-size: 13px; margin-top: 8px;'>
+                    <span style='font-size: 11px; color: #7f8c8d;'>🕒 N/A</span><br>
+                    <b>🎯 信心程度: 20%</b><br>
+                    <b>💡 專家建議:</b> 雖然股價在前期長期盤整後曾帶量突破，但最新一根K線為帶量下跌的紅K棒，且收盤價跌破5日均線。這表明短期內存在獲利了結壓力或調整需求，目前並非理想的買入起漲點。建議觀望，待股價止穩並重新站上均線後再考慮進場。<br>
+                    <hr style='border: 0.5px solid #eee; margin: 8px 0;'>
+                    <div style='font-size: 11px; color: #666;'>
+                        均線糾結: ❌<br>長期盤整: ✅<br>帶量突破: ✅<br>站上均線: ❌
+                    </div>
+                </div>
+            </td>
+                <td>
+                    <button class="btn-action" style="padding: 8px 12px; font-size: 0.8em; margin-bottom: 5px; width: 100%;" 
+                            onclick="addToWatchlist('6213', '均線糾結: ❌\n長期盤整: ✅\n帶量突破: ✅\n站上均線: ❌\n💡 專家建議: 雖然股價在前期長期盤整後曾帶量突破，但最新一根K線為帶量下跌的紅K棒，且收盤價跌破5日均線。這表明短期內存在獲利了結壓力或調整需求，目前並非理想的買入起漲點。建議觀望，待股價止穩並重新站上均線後再考慮進場。', this)">
+                        加入觀察清單
+                    </button>
+                    <a href="breakout_charts/6213_kline.png" target="_blank">
+                        <img class="chart-preview" src="breakout_charts/6213_kline.png?t=1776951608" style="width: 100%;">
+                    </a>
+                </td>
+            </tr>
+        
+            <tr>
+                <td><input type="checkbox" name="select-stock" value="2108" onchange="updateCommand()"></td>
+                <td>2108</td>
+                <td style="font-weight:bold; white-space:nowrap;">南帝</td>
+                <td class="date-col"></td>
+                <td class="reason-col">⭐⭐⭐⭐ (外資+趨勢強+KD強)</td>
+                <td>27.10</td>
+                <td class="score">6</td>
+                <td>
+            <span class="status-icon pass" title="獲利 (EPS > 0)">💰</span>
+            <span class="status-icon pass" title="內部人持股">👤</span>
+            <span class="status-icon " title="營收雙增 (YoY/MoM)">📈</span>
+            <span class="status-icon pass" title="營益率成長">⚙️</span>
+            <span class="status-icon pass" title="股東人數減少 (散戶退場)">📉</span>
+            <span class="status-icon pass" title="大戶持股增加">🐳</span>
+        </td>
+                <td></td>
+                <td>
+                    <button class="btn-action" style="padding: 8px 12px; font-size: 0.8em; margin-bottom: 5px; width: 100%;" 
+                            onclick="addToWatchlist('2108', '⭐⭐⭐⭐ (外資+趨勢強+KD強)', this)">
+                        加入觀察清單
+                    </button>
+                    <a href="breakout_charts/2108_kline.png" target="_blank">
+                        <img class="chart-preview" src="breakout_charts/2108_kline.png?t=1776951608" style="width: 100%;">
+                    </a>
+                </td>
+            </tr>
+        
+            <tr>
+                <td><input type="checkbox" name="select-stock" value="4420" onchange="updateCommand()"></td>
+                <td>4420</td>
+                <td style="font-weight:bold; white-space:nowrap;">光明</td>
+                <td class="date-col">2026-02-27</td>
+                <td class="reason-col">均線糾結 & 長期盤整 & 帶量突破</td>
+                <td>43.00</td>
+                <td class="score">5</td>
+                <td>
+            <span class="status-icon pass" title="獲利 (EPS > 0)">💰</span>
+            <span class="status-icon pass" title="內部人持股">👤</span>
+            <span class="status-icon pass" title="營收雙增 (YoY/MoM)">📈</span>
+            <span class="status-icon " title="營益率成長">⚙️</span>
+            <span class="status-icon pass" title="股東人數減少 (散戶退場)">📉</span>
+            <span class="status-icon pass" title="大戶持股增加">🐳</span>
+        </td>
+                <td>
+                <div class='ai-pass' style='background: #fff3cd'>診斷中 (條件未全過)</div>
+                <div style='font-size: 13px; margin-top: 8px;'>
+                    <span style='font-size: 11px; color: #7f8c8d;'>🕒 2026-03-17 15:12:23</span><br>
+                    <b>🎯 信心程度: 40%</b><br>
+                    <b>💡 專家建議:</b> 均線糾結與長期盤整顯示股價可能醞釀方向選擇，但最新K線並非帶量突破的紅K棒，且其成交量未見顯著突起，缺乏強勁上漲的確認訊號。建議暫時觀望，待更明確的突破訊號出現再考慮介入。<br>
+                    <hr style='border: 0.5px solid #eee; margin: 8px 0;'>
+                    <div style='font-size: 11px; color: #666;'>
+                        均線糾結: ✅<br>長期盤整: ✅<br>帶量突破: ❌<br>站上均線: ❌
+                    </div>
+                </div>
+            </td>
+                <td>
+                    <button class="btn-action" style="padding: 8px 12px; font-size: 0.8em; margin-bottom: 5px; width: 100%;" 
+                            onclick="addToWatchlist('4420', '均線糾結 & 長期盤整', this)">
+                        加入觀察清單
+                    </button>
+                    <a href="breakout_charts/4420_kline.png" target="_blank">
+                        <img class="chart-preview" src="breakout_charts/4420_kline.png?t=1776951608" style="width: 100%;">
+                    </a>
+                </td>
+            </tr>
+        
+            <tr>
+                <td><input type="checkbox" name="select-stock" value="6550" onchange="updateCommand()"></td>
+                <td>6550</td>
+                <td style="font-weight:bold; white-space:nowrap;">北極星藥業-KY</td>
+                <td class="date-col">2026-02-27</td>
+                <td class="reason-col">均線糾結 & 長期盤整 & 帶量突破</td>
+                <td>17.70</td>
+                <td class="score">4</td>
+                <td>
+            <span class="status-icon " title="獲利 (EPS > 0)">💰</span>
+            <span class="status-icon pass" title="內部人持股">👤</span>
+            <span class="status-icon " title="營收雙增 (YoY/MoM)">📈</span>
+            <span class="status-icon " title="營益率成長">⚙️</span>
+            <span class="status-icon pass" title="股東人數減少 (散戶退場)">📉</span>
+            <span class="status-icon pass" title="大戶持股增加">🐳</span>
+        </td>
+                <td>
+                <div class='ai-pass' style='background: #fff3cd'>診斷中 (條件未全過)</div>
+                <div style='font-size: 13px; margin-top: 8px;'>
+                    <span style='font-size: 11px; color: #7f8c8d;'>🕒 N/A</span><br>
+                    <b>🎯 信心程度: 80%</b><br>
+                    <b>💡 專家建議:</b> 該股歷經長期盤整與均線糾結後，成功帶量突破，顯示強勁上漲潛力。儘管最新K線呈短線回檔，但整體趨勢仍偏多，建議逢低關注。<br>
+                    <hr style='border: 0.5px solid #eee; margin: 8px 0;'>
+                    <div style='font-size: 11px; color: #666;'>
+                        均線糾結: ✅<br>長期盤整: ✅<br>帶量突破: ✅<br>站上均線: ❌
+                    </div>
+                </div>
+            </td>
+                <td>
+                    <button class="btn-action" style="padding: 8px 12px; font-size: 0.8em; margin-bottom: 5px; width: 100%;" 
+                            onclick="addToWatchlist('6550', '均線糾結 & 長期盤整 & 帶量突破', this)">
+                        加入觀察清單
+                    </button>
+                    <a href="breakout_charts/6550_kline.png" target="_blank">
+                        <img class="chart-preview" src="breakout_charts/6550_kline.png?t=1776951608" style="width: 100%;">
+                    </a>
+                </td>
+            </tr>
+        
+            <tr>
+                <td><input type="checkbox" name="select-stock" value="6770" onchange="updateCommand()"></td>
+                <td>6770</td>
+                <td style="font-weight:bold; white-space:nowrap;">力積電</td>
+                <td class="date-col">2026-03-02</td>
+                <td class="reason-col">V哥，記憶體概念股</td>
+                <td>52.90</td>
+                <td class="score">4</td>
+                <td>
+            <span class="status-icon " title="獲利 (EPS > 0)">💰</span>
+            <span class="status-icon pass" title="內部人持股">👤</span>
+            <span class="status-icon pass" title="營收雙增 (YoY/MoM)">📈</span>
+            <span class="status-icon " title="營益率成長">⚙️</span>
+            <span class="status-icon pass" title="股東人數減少 (散戶退場)">📉</span>
+            <span class="status-icon pass" title="大戶持股增加">🐳</span>
+        </td>
+                <td>
+                <div class='ai-pass' style='background: #fff3cd'>診斷中 (條件未全過)</div>
+                <div style='font-size: 13px; margin-top: 8px;'>
+                    <span style='font-size: 11px; color: #7f8c8d;'>🕒 N/A</span><br>
+                    <b>🎯 信心程度: 10%</b><br>
+                    <b>💡 專家建議:</b> 目前均線排列呈現多頭趨勢，但近期並無均線糾結或長期盤整後帶量突破的跡象。最新一根 K 線為實體紅 K 棒且收盤價跌破 5 日均線，不符合站上均線的買入條件，建議觀望。<br>
+                    <hr style='border: 0.5px solid #eee; margin: 8px 0;'>
+                    <div style='font-size: 11px; color: #666;'>
+                        均線糾結: ❌<br>長期盤整: ❌<br>帶量突破: ❌<br>站上均線: ❌
+                    </div>
+                </div>
+            </td>
+                <td>
+                    <button class="btn-action" style="padding: 8px 12px; font-size: 0.8em; margin-bottom: 5px; width: 100%;" 
+                            onclick="addToWatchlist('6770', '均線糾結: ❌\n長期盤整: ❌\n帶量突破: ❌\n站上均線: ❌\n💡 專家建議: 目前均線排列呈現多頭趨勢，但近期並無均線糾結或長期盤整後帶量突破的跡象。最新一根 K 線為實體紅 K 棒且收盤價跌破 5 日均線，不符合站上均線的買入條件，建議觀望。', this)">
+                        加入觀察清單
+                    </button>
+                    <a href="breakout_charts/6770_kline.png" target="_blank">
+                        <img class="chart-preview" src="breakout_charts/6770_kline.png?t=1776951608" style="width: 100%;">
+                    </a>
+                </td>
+            </tr>
+        
+            <tr>
+                <td><input type="checkbox" name="select-stock" value="2103" onchange="updateCommand()"></td>
+                <td>2103</td>
+                <td style="font-weight:bold; white-space:nowrap;">台橡</td>
+                <td class="date-col">2026-03-02</td>
+                <td class="reason-col">V哥，橡膠</td>
+                <td>19.15</td>
+                <td class="score">4</td>
+                <td>
+            <span class="status-icon pass" title="獲利 (EPS > 0)">💰</span>
+            <span class="status-icon pass" title="內部人持股">👤</span>
+            <span class="status-icon " title="營收雙增 (YoY/MoM)">📈</span>
+            <span class="status-icon " title="營益率成長">⚙️</span>
+            <span class="status-icon pass" title="股東人數減少 (散戶退場)">📉</span>
+            <span class="status-icon pass" title="大戶持股增加">🐳</span>
+        </td>
+                <td>
+                <div class='ai-pass' style='background: #fff3cd'>診斷中 (條件未全過)</div>
+                <div style='font-size: 13px; margin-top: 8px;'>
+                    <span style='font-size: 11px; color: #7f8c8d;'>🕒 N/A</span><br>
+                    <b>🎯 信心程度: 75%</b><br>
+                    <b>💡 專家建議:</b> 股價在長期盤整後帶量突破，顯示強勁買盤，上漲趨勢確立。然而，最新 K 線回檔且收盤價跌破 5 日均線，短期有獲利了結壓力，建議觀察止穩後再考慮買入。<br>
+                    <hr style='border: 0.5px solid #eee; margin: 8px 0;'>
+                    <div style='font-size: 11px; color: #666;'>
+                        均線糾結: ❌<br>長期盤整: ✅<br>帶量突破: ✅<br>站上均線: ❌
+                    </div>
+                </div>
+            </td>
+                <td>
+                    <button class="btn-action" style="padding: 8px 12px; font-size: 0.8em; margin-bottom: 5px; width: 100%;" 
+                            onclick="addToWatchlist('2103', '均線糾結: ❌\n長期盤整: ✅\n帶量突破: ✅\n站上均線: ❌\n💡 專家建議: 股價在長期盤整後帶量突破，顯示強勁買盤，上漲趨勢確立。然而，最新 K 線回檔且收盤價跌破 5 日均線，短期有獲利了結壓力，建議觀察止穩後再考慮買入。', this)">
+                        加入觀察清單
+                    </button>
+                    <a href="breakout_charts/2103_kline.png" target="_blank">
+                        <img class="chart-preview" src="breakout_charts/2103_kline.png?t=1776951608" style="width: 100%;">
+                    </a>
+                </td>
+            </tr>
+        
+            <tr>
+                <td><input type="checkbox" name="select-stock" value="8215" onchange="updateCommand()"></td>
+                <td>8215</td>
+                <td style="font-weight:bold; white-space:nowrap;">明基材</td>
+                <td class="date-col">2026-03-13</td>
+                <td class="reason-col">外資連買3天 + 投信連買1天</td>
+                <td>26.35</td>
+                <td class="score">4</td>
+                <td>
+            <span class="status-icon " title="獲利 (EPS > 0)">💰</span>
+            <span class="status-icon pass" title="內部人持股">👤</span>
+            <span class="status-icon " title="營收雙增 (YoY/MoM)">📈</span>
+            <span class="status-icon " title="營益率成長">⚙️</span>
+            <span class="status-icon pass" title="股東人數減少 (散戶退場)">📉</span>
+            <span class="status-icon pass" title="大戶持股增加">🐳</span>
+        </td>
+                <td>
+                <div class='ai-pass' style='background: #fff3cd'>診斷中 (條件未全過)</div>
+                <div style='font-size: 13px; margin-top: 8px;'>
+                    <span style='font-size: 11px; color: #7f8c8d;'>🕒 N/A</span><br>
+                    <b>🎯 信心程度: 40%</b><br>
+                    <b>💡 專家建議:</b> 雖然股價經過長期盤整與均線糾結後出現帶量突破，顯示底部有資金進駐，但最新一根K線為帶量紅K，且收盤價未能站穩5日均線，顯示上方壓力沉重或短線獲利了結。目前不建議買入，宜保持觀望，等待股價明確站穩均線後再評估。<br>
+                    <hr style='border: 0.5px solid #eee; margin: 8px 0;'>
+                    <div style='font-size: 11px; color: #666;'>
+                        均線糾結: ✅<br>長期盤整: ✅<br>帶量突破: ✅<br>站上均線: ❌
+                    </div>
+                </div>
+            </td>
+                <td>
+                    <button class="btn-action" style="padding: 8px 12px; font-size: 0.8em; margin-bottom: 5px; width: 100%;" 
+                            onclick="addToWatchlist('8215', '均線糾結 & 長期盤整 & 帶量突破', this)">
+                        加入觀察清單
+                    </button>
+                    <a href="breakout_charts/8215_kline.png" target="_blank">
+                        <img class="chart-preview" src="breakout_charts/8215_kline.png?t=1776951608" style="width: 100%;">
+                    </a>
+                </td>
+            </tr>
+        
+            <tr>
+                <td><input type="checkbox" name="select-stock" value="6443" onchange="updateCommand()"></td>
+                <td>6443</td>
+                <td style="font-weight:bold; white-space:nowrap;">元晶</td>
+                <td class="date-col">2026-03-02</td>
+                <td class="reason-col">張文赫，低軌衛星概念股，太陽能板</td>
+                <td>37.50</td>
+                <td class="score">3</td>
+                <td>
+            <span class="status-icon " title="獲利 (EPS > 0)">💰</span>
+            <span class="status-icon pass" title="內部人持股">👤</span>
+            <span class="status-icon " title="營收雙增 (YoY/MoM)">📈</span>
+            <span class="status-icon " title="營益率成長">⚙️</span>
+            <span class="status-icon pass" title="股東人數減少 (散戶退場)">📉</span>
+            <span class="status-icon pass" title="大戶持股增加">🐳</span>
+        </td>
+                <td>
+                <div class='ai-pass' style='background: #fff3cd'>診斷中 (條件未全過)</div>
+                <div style='font-size: 13px; margin-top: 8px;'>
+                    <span style='font-size: 11px; color: #7f8c8d;'>🕒 N/A</span><br>
+                    <b>🎯 信心程度: 90%</b><br>
+                    <b>💡 專家建議:</b> 建議買入，股價在長期盤整後帶量突破，顯示強勁上漲動能，且站穩各期均線之上，看漲格局明確。<br>
+                    <hr style='border: 0.5px solid #eee; margin: 8px 0;'>
+                    <div style='font-size: 11px; color: #666;'>
+                        均線糾結: ❌<br>長期盤整: ✅<br>帶量突破: ✅<br>站上均線: ✅
+                    </div>
+                </div>
+            </td>
+                <td>
+                    <button class="btn-action" style="padding: 8px 12px; font-size: 0.8em; margin-bottom: 5px; width: 100%;" 
+                            onclick="addToWatchlist('6443', '均線糾結: ❌\n長期盤整: ✅\n帶量突破: ✅\n站上均線: ✅\n💡 專家建議: 建議買入，股價在長期盤整後帶量突破，顯示強勁上漲動能，且站穩各期均線之上，看漲格局明確。', this)">
+                        加入觀察清單
+                    </button>
+                    <a href="breakout_charts/6443_kline.png" target="_blank">
+                        <img class="chart-preview" src="breakout_charts/6443_kline.png?t=1776951608" style="width: 100%;">
+                    </a>
+                </td>
+            </tr>
+        
+                </tbody>
+            </table>
+        </div>
+    </body>
+    </html>
+    

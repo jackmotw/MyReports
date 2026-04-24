@@ -1,0 +1,453 @@
+
+    <!DOCTYPE html>
+    <html lang="zh-TW">
+    <head>
+        <meta charset="UTF-8">
+        <title>股票庫存 出場與 AI 綜合診斷報告</title>
+        <style>
+            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa; margin: 0; padding: 20px; color: #333; display: flex; }
+            .sidebar { width: 200px; position: fixed; top: 20px; left: 20px; background: white; border-radius: 10px; padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-height: 90vh; overflow-y: auto; }
+            .sidebar h2 { font-size: 18px; color: #2c3e50; margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+            .sidebar ul { list-style: none; padding: 0; margin: 0; }
+            .sidebar li { margin-bottom: 8px; }
+            .sidebar a { text-decoration: none; color: #34495e; font-weight: 500; display: block; padding: 5px; border-radius: 4px; transition: background 0.2s; }
+            .sidebar a:hover { background: #eef2f5; color: #0056b3; }
+            .main-content { margin-left: 240px; flex: 1; max-width: 1200px; }
+            h1 { text-align: center; color: #2c3e50; }
+            .card { background: white; border-radius: 10px; padding: 20px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+            .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 15px; }
+            .stock-title { font-size: 24px; font-weight: bold; color: #34495e; }
+            .price { font-size: 20px; font-weight: bold; color: #e74c3c; }
+            .content-wrapper { display: flex; gap: 20px; flex-wrap: wrap; }
+            .col-left { flex: 1; min-width: 300px; }
+            .col-right { flex: 1.5; min-width: 400px; }
+            .signals { margin-bottom: 20px; }
+            .signal-item { margin: 5px 0; padding: 10px; background: #fdf2f2; border-left: 4px solid #e74c3c; border-radius: 4px; }
+            .signal-item.safe { background: #f2f9f2; border-left: 4px solid #2ecc71; }
+            .ai-box { background: #f0f7ff; border: 1px solid #cce3f6; border-radius: 8px; padding: 15px; font-size: 15px; line-height: 1.6; }
+            .ai-box h3 { color: #0056b3; margin-top: 0; margin-bottom: 10px; display: flex; align-items: center; }
+            .ai-box h3::before { content: '✨'; margin-right: 8px; }
+            .chart-img { width: 100%; height: auto; border: 1px solid #ddd; border-radius: 4px; display: block; }
+            .footer { text-align: center; margin-top: 40px; color: #7f8c8d; font-size: 14px; margin-bottom: 40px; }
+            /* Markdown rendering styles */
+            .ai-box p { margin-top: 0; }
+            .ai-box strong { color: #111; }
+            .ai-box ul { margin-top: 5px; padding-left: 20px; }
+        </style>
+        <!-- Simple markdown parser for the browser -->
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    </head>
+    <body>
+        <div class="sidebar">
+            <h2>庫存清單導覽</h2>
+            <ul>
+    <li><a href='#stock-2066'>世德 (2066)</a></li><li><a href='#stock-2477'>美隆電 (2477)</a></li><li><a href='#stock-3374'>精材 (3374)</a></li><li><a href='#stock-3376'>新日興 (3376)</a></li><li><a href='#stock-3479'>安勤 (3479)</a></li><li><a href='#stock-6197'>佳必琪 (6197)</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <h1>📊 股票庫存 出場與 AI 綜合診斷報告</h1>
+            <p style="text-align:center; color:#555;">分析時間: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}</p>
+            <p style="text-align:center; color:#555; margin-bottom: 40px;">結合量化條件與 Gemini AI 綜合技術分析</p>
+    
+        <div class="card" id="stock-2066">
+            <div class="header">
+                <div class="stock-title">世德 (2066)</div>
+                <div class="price">最新收盤價: 47.60 <span style="font-size: 14px; color: #7f8c8d; font-weight: normal; margin-left: 10px;">(更新時間: 2026-04-23 22:34)</span></div>
+            </div>
+            
+            <div class="content-wrapper" style="flex-direction: column;">
+                <div class="top-section" style="display: flex; gap: 20px; flex-wrap: wrap; width: 100%; margin-bottom: 20px;">
+                    <div class="col-left">
+                        
+            <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                <h3 style="margin-top:0; color: #2c3e50; font-size: 16px;">💼 庫存狀態</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 15px;">
+                    <div>買進均價：<b>98.03</b></div>
+                    <div>庫存股數：<b>3000</b></div>
+                    <div>預估損益：<b style="color: #2ecc71;">-151,290</b></div>
+                    <div>報酬率：<b style="color: #2ecc71;">-51.44%</b></div>
+                </div>
+            </div>
+            
+                        <div class="signals">
+                            <h3 style="margin-top:0;">📋 量化診斷結果</h3>
+                            <div class="signal-item ">💀 【跌破季線且季線下彎】生命線斷裂，絕對停損訊號！</div><div class="signal-item ">📉 【下跌量增】賣壓沉重，跌勢可能持續。</div>
+                        </div>
+                    </div>
+                    <div class="col-right" style="display: flex; flex-direction: column; justify-content: center;">
+                        <img class="chart-img" src="charts/2066_chart.png" alt="K線圖">
+                        <p style="text-align:center; font-size:12px; color:#666; margin-top:5px;">藍線: 5MA, 橘線: 10MA, 綠線: 20MA, 紅線: 60MA, 灰線: 200MA</p>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="card" id="stock-2477">
+            <div class="header">
+                <div class="stock-title">美隆電 (2477)</div>
+                <div class="price">最新收盤價: 24.50 <span style="font-size: 14px; color: #7f8c8d; font-weight: normal; margin-left: 10px;">(更新時間: 2026-04-23 22:34)</span></div>
+            </div>
+            
+            <div class="content-wrapper" style="flex-direction: column;">
+                <div class="top-section" style="display: flex; gap: 20px; flex-wrap: wrap; width: 100%; margin-bottom: 20px;">
+                    <div class="col-left">
+                        
+            <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                <h3 style="margin-top:0; color: #2c3e50; font-size: 16px;">💼 庫存狀態</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 15px;">
+                    <div>買進均價：<b>27.10</b></div>
+                    <div>庫存股數：<b>2000</b></div>
+                    <div>預估損益：<b style="color: #2ecc71;">-5,200</b></div>
+                    <div>報酬率：<b style="color: #2ecc71;">-9.59%</b></div>
+                </div>
+            </div>
+            
+                        <div class="signals">
+                            <h3 style="margin-top:0;">📋 量化診斷結果</h3>
+                            <div class="signal-item safe">✅ 目前未觸發明顯技術面出場條件，可依紀律續抱。</div>
+                        </div>
+                    </div>
+                    <div class="col-right" style="display: flex; flex-direction: column; justify-content: center;">
+                        <img class="chart-img" src="charts/2477_chart.png" alt="K線圖">
+                        <p style="text-align:center; font-size:12px; color:#666; margin-top:5px;">藍線: 5MA, 橘線: 10MA, 綠線: 20MA, 紅線: 60MA, 灰線: 200MA</p>
+                    </div>
+                </div>
+                
+                <div class="bottom-section" style="width: 100%;">
+                    <div class="ai-box">
+                        <h3>Gemini 綜合診斷</h3>
+                        <div id="ai-content-2477"></div>
+                        <script>
+                            document.getElementById('ai-content-2477').innerHTML = marked.parse(`美隆電 (2477) 綜合診斷與操作建議
+
+### 一、 綜合診斷
+
+#### 1. 技術面分析
+
+*   **K線型態與均線排列：** 從K線圖觀察，美隆電近期股價經歷一段盤整後，在最近一個交易日出現一根帶量長紅K棒，成功站上所有短期、中期均線（5MA、10MA、20MA、60MA、200MA）。這是一個強勢的訊號，顯示股價向上突破的企圖心。
+*   **均線防守：**
+    *   目前收盤價 24.50 位於 5MA (24.29) 之上，短線強勢。
+    *   收盤價 24.50 位於 10MA (24.05) 之上，波段趨勢未被破壞。
+    *   收盤價 24.50 站上季線 (60MA) 24.34，儘管季線方向目前仍顯示為「向下」，但股價已站上，暫時化解了趨勢走空的絕對停損條件。
+*   **量價結構：** 最新成交量 1009363.0 大幅超越 20 日均量 237896.05，呈現「上漲量增」的健康型態。這呼應了股價突破的力道，顯示買盤積極。
+*   **壓力與支撐：** 股價近期在 23.5-24.0 區間獲得支撐，並在最新一根K棒突破了前期的盤整區間上緣，顯示短期內壓力已被有效消化。
+
+#### 2. 基本面分析
+
+*   **財務指標：**
+    *   本益比 (PE) 14.58，屬於合理範圍。
+    *   股價淨值比 (PB) 0.92，低於1，可能暗示股價被低估，但也需考量公司獲利能力或產業前景。
+    *   營收季成長率 -3.40%，顯示營收表現仍有待改善，基本面目前未見顯著支撐，呈現溫和偏弱。
+
+#### 3. 籌碼面分析
+
+*   目前無法取得完整的法人籌碼資料，因此無法從外資/大戶動向及股東人數變化來判斷籌碼的集中或分散情況。
+
+#### 4. 新聞與市場資訊
+
+*   **主要業務與轉型：** 美隆電主要產品為音響產品（揚聲器、喇叭單體）、電源供應器（變壓器、整流器）及其他電子產品。近年公司積極投入高階車用、伺服器電源供應器等新產品開發，並透過轉投資切入電動車充電樁業務，尋求轉型成長契機。
+*   **近期發展：**
+    *   2024年3月營收月增年減，年減率達35.78%。第一季營收合計年減19.98%。這顯示公司營收壓力仍在。
+    *   美隆電為全球前三大變壓器製造商，積極往高附加價值產品轉型，尤其是透過子公司美達投入充電樁產業，預期2024年有機會開始貢獻營收。這項轉型是潛在利多，若能成功，有望改善公司基本面。
+    *   美隆電近年來獲利表現不如過去，但持續配發股利，顯示公司營運仍屬穩健，只是成長動能較弱。
+
+### 二、 綜合評估
+
+美隆電在技術面上呈現強勢突破訊號，股價站上所有主要均線，且伴隨量能放大，顯示短線及波段走勢轉強。然而，季線（60MA）仍呈向下趨勢，暗示中長期壓力尚未完全解除，需要密切觀察季線是否能跟隨股價上揚而翻轉向上。
+
+基本面方面，美隆電的營收仍處於衰退狀態，股價淨值比雖低於1，但營收成長動能不足。公司正積極轉型至高附加價值產品及電動車充電樁領域，這為其未來成長帶來想像空間，但實際效益仍需時間驗證。籌碼面因資料不足，暫無法判斷。
+
+### 三、 操作建議
+
+**續抱，並嚴格設定停利點。**
+
+**原因：**
+
+1.  **技術面符合「續抱」條件：** 根據「出場條件教學筆記」，股價目前收盤價 24.50 仍維持在 5 日均線 24.29 及 10 日均線 24.05 之上，並未觸發短線停損或波段停利訊號。此外，股價站上季線，且未出現爆量長黑K棒等轉弱型態，因此依紀律應續抱。
+2.  **出現突破訊號：** 股價在近期帶量突破盤整區間，並站上所有均線，顯示買盤積極，短線有機會延續漲勢。
+3.  **潛在轉型利多：** 儘管基本面目前偏弱，但公司積極轉型至電動車充電樁等新興產業，若轉型成功，將為未來的營收與獲利帶來成長動能，市場資金可能因此提前反應。
+
+**注意事項與停利點設定：**
+
+*   **嚴格遵守紀律：** 由於季線仍向下，顯示中長期趨勢壓力仍存。一旦股價從高檔回落，收盤價**跌破 10 日均線 24.05**，或出現**高檔爆量長黑K棒**，應立即執行停利賣出。
+*   **觀察季線動向：** 若股價能持續強勢，帶動季線 (60MA) 翻揚向上，則中長期趨勢將轉為多頭，可抱得更久。
+*   **逢高減碼安撫機制：** 若漲勢過快造成心理壓力，可依紀律允許賣出極少數零股來安撫情緒，但核心波段部位應抱緊，等待明確的停利訊號出現。`);
+                        </script>
+                    </div>
+                </div>
+            
+            </div>
+        </div>
+        
+        <div class="card" id="stock-3374">
+            <div class="header">
+                <div class="stock-title">精材 (3374)</div>
+                <div class="price">最新收盤價: 183.50 <span style="font-size: 14px; color: #7f8c8d; font-weight: normal; margin-left: 10px;">(更新時間: 2026-04-23 22:35)</span></div>
+            </div>
+            
+            <div class="content-wrapper" style="flex-direction: column;">
+                <div class="top-section" style="display: flex; gap: 20px; flex-wrap: wrap; width: 100%; margin-bottom: 20px;">
+                    <div class="col-left">
+                        
+            <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                <h3 style="margin-top:0; color: #2c3e50; font-size: 16px;">💼 庫存狀態</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 15px;">
+                    <div>買進均價：<b>193.12</b></div>
+                    <div>庫存股數：<b>260</b></div>
+                    <div>預估損益：<b style="color: #2ecc71;">-2,501</b></div>
+                    <div>報酬率：<b style="color: #2ecc71;">-4.98%</b></div>
+                </div>
+            </div>
+            
+                        <div class="signals">
+                            <h3 style="margin-top:0;">📋 量化診斷結果</h3>
+                            <div class="signal-item ">⚠️ 【跌破 5日線】短線轉弱，留意停損/停利。</div><div class="signal-item ">💣 【高檔爆量長黑】主力可能出貨，符合停利/停損要件。</div><div class="signal-item ">📉 【下跌量增】賣壓沉重，跌勢可能持續。</div>
+                        </div>
+                    </div>
+                    <div class="col-right" style="display: flex; flex-direction: column; justify-content: center;">
+                        <img class="chart-img" src="charts/3374_chart.png" alt="K線圖">
+                        <p style="text-align:center; font-size:12px; color:#666; margin-top:5px;">藍線: 5MA, 橘線: 10MA, 綠線: 20MA, 紅線: 60MA, 灰線: 200MA</p>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="card" id="stock-3376">
+            <div class="header">
+                <div class="stock-title">新日興 (3376)</div>
+                <div class="price">最新收盤價: 215.00 <span style="font-size: 14px; color: #7f8c8d; font-weight: normal; margin-left: 10px;">(更新時間: 2026-04-23 22:35)</span></div>
+            </div>
+            
+            <div class="content-wrapper" style="flex-direction: column;">
+                <div class="top-section" style="display: flex; gap: 20px; flex-wrap: wrap; width: 100%; margin-bottom: 20px;">
+                    <div class="col-left">
+                        
+            <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                <h3 style="margin-top:0; color: #2c3e50; font-size: 16px;">💼 庫存狀態</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 15px;">
+                    <div>買進均價：<b>220.14</b></div>
+                    <div>庫存股數：<b>320</b></div>
+                    <div>預估損益：<b style="color: #2ecc71;">-1,645</b></div>
+                    <div>報酬率：<b style="color: #2ecc71;">-2.33%</b></div>
+                </div>
+            </div>
+            
+                        <div class="signals">
+                            <h3 style="margin-top:0;">📋 量化診斷結果</h3>
+                            <div class="signal-item ">💣 【高檔爆量長黑】主力可能出貨，符合停利/停損要件。</div>
+                        </div>
+                    </div>
+                    <div class="col-right" style="display: flex; flex-direction: column; justify-content: center;">
+                        <img class="chart-img" src="charts/3376_chart.png" alt="K線圖">
+                        <p style="text-align:center; font-size:12px; color:#666; margin-top:5px;">藍線: 5MA, 橘線: 10MA, 綠線: 20MA, 紅線: 60MA, 灰線: 200MA</p>
+                    </div>
+                </div>
+                
+                <div class="bottom-section" style="width: 100%;">
+                    <div class="ai-box">
+                        <h3>Gemini 綜合診斷</h3>
+                        <div id="ai-content-3376"></div>
+                        <script>
+                            document.getElementById('ai-content-3376').innerHTML = marked.parse(`### 新日興 (3376) 綜合診斷與操作建議
+
+根據您提供的「出場條件教學筆記」、新日興的最新技術面數值、基本面、籌碼面與近期新聞資訊，以下為綜合診斷與操作建議：
+
+#### 一、 技術面分析
+
+1.  **K線型態：** 最新交易日出現一根「高檔爆量長黑K棒」。根據教學筆記，此型態屬於「量價結構出現轉弱/出貨型態」中的「爆量長黑破底」與「高檔爆量長黑」訊號，為極明確的停利/停損要件。從K線圖觀察，此長黑K棒已跌破前幾根陽線的低點，顯示強勁賣壓。
+2.  **成交量：** 最新成交量達 13388387.0，遠高於 20 日均量 6655902.20，確認為「爆量」。這符合「下跌量增」的條件，代表賣壓沉重，跌勢可能持續。
+3.  **均線狀況：**
+    *   目前收盤價 215.00 元，略高於短期均線 5MA (212.10) 和波段均線 10MA (205.05)。
+    *   月線 (20MA) 為 204.53 元，季線 (60MA) 為 207.88 元。股價仍在所有短期和中期均線之上。
+    *   **然而，季線 (60MA) 的方向為「向下」**，這是一個重要的趨勢轉弱警訊，代表中長期趨勢已偏空。
+    *   年線 (200MA) 為 214.90 元，與目前收盤價 215.00 元非常接近，形成短期關鍵點位。
+
+#### 二、 基本面分析
+
+1.  **本益比 (PE)：** 高達 132.71605，顯示市場對其未來成長有極高的預期。
+2.  **股價淨值比 (PB)：** 2.4484684，尚在合理範圍。
+3.  **營收季成長率：** 為 **-29.20%**，呈現大幅衰退。儘管最新的報導指出 2026 年第一季營收年減 16.14%，但營收已趨於穩定且有望轉虧為盈，但仍是負成長。這與其極高的本益比形成強烈對比，表明當前基本面數據並不支持如此高的估值，存在基本面與市場預期脫鉤的風險。
+
+#### 三、 籌碼面分析
+
+*   提供資訊顯示「無法取得完整籌碼資料」，因此無法針對大戶/外資動向或籌碼流向散戶進行判斷。
+
+#### 四、 新聞消息面分析
+
+1.  **轉型與成長動能：** 新日興正積極從傳統筆電軸承供應商轉型，專注於高單價的折疊裝置（如蘋果摺疊iPhone、AI PC相關）和穿戴裝置（耳機、智慧手錶）等高毛利產品線。穿戴產品營收佔比已超過五成。
+2.  **折疊裝置題材：** 市場對蘋果即將推出的折疊iPhone抱有高度期待，新日興被視為關鍵軸承供應商，折疊手機轉軸單價遠高於筆電轉軸。
+3.  **AI 相關佈局：** 公司也積極切入 AI PC 新設計（如可折疊電腦）、AI 眼鏡、AI 伺服器零件代工及航太領域，尋求新的成長引擎。
+4.  **產能擴充：** 為因應未來需求，公司正擴建越南及蘇州新廠，預計 2025-2026 年陸續完工量產。
+5.  **財報預期：** 部分法人預期 2024 年 EPS 將年增逾六成，2025 年第一季獲利年增近 1.5 倍。甚至有報導預期 2025 年 EPS 有機會衝破 10.34 元。然而，這與目前提供的營收季成長率為負值形成對比，需留意市場對未來的預期是否已充分反映在股價上。
+
+#### 五、 綜合評估與操作建議
+
+新日興具有明確的產業轉型利多，積極佈局高價值的折疊裝置和 AI 相關應用，這些長期潛力解釋了其極高的市場本益比。然而，從短期來看，當前股價走勢面臨嚴峻挑戰：
+
+1.  **技術面轉弱訊號明確：** 出現「高檔爆量長黑K棒」，且伴隨巨量，這在教學筆記中是「主力出貨」的明確警示，也是極為明確的停利或停損訊號。
+2.  **中長期趨勢不佳：** 季線 (60MA) 已彎頭向下，顯示長期趨勢偏空，即使目前股價仍在其上，也需高度警惕。
+3.  **基本面數據與估值風險：** 目前的營收季成長率為大幅負值，與高達 132 倍的本益比形成強烈矛盾。在基本面未改善的情況下，過度反映未來利多的高估值容易受到技術面賣壓的衝擊。
+
+綜合以上分析，根據「出場條件教學筆記」中「絕對紀律一：市場叫你走就要走，毫不猶豫」的原則，以及量價結構和趨勢指標的轉弱，給予投資者的操作建議是：
+
+**動作建議：減碼或嚴格停損。**
+
+**具體原因：**
+
+*   **觸發明確的出場訊號：** 「高檔爆量長黑K棒」伴隨「下跌量增」是教學筆記中明確的停利與停損訊號。這表示市場賣壓沉重，主力資金可能正在離場。
+*   **季線下彎的趨勢警示：** 儘管股價尚未跌破季線，但季線方向向下已是長期趨勢走空的預兆，增加了持有風險。
+*   **高估值下的脆弱性：** 在營收負成長且本益比極高的情況下，市場對於未來利多的預期已過度樂觀。一旦技術面出現轉弱，股價容易快速修正。
+
+建議投資者應立即採取行動，先行減碼大部分持股。若股價未能迅速站回爆量長黑K棒的實體之上，或跌破 5 日、10 日甚至季線等關鍵支撐，則應考慮全部出場，避免更大的損失。`);
+                        </script>
+                    </div>
+                </div>
+            
+            </div>
+        </div>
+        
+        <div class="card" id="stock-3479">
+            <div class="header">
+                <div class="stock-title">安勤 (3479)</div>
+                <div class="price">最新收盤價: 92.50 <span style="font-size: 14px; color: #7f8c8d; font-weight: normal; margin-left: 10px;">(更新時間: 2026-04-23 22:36)</span></div>
+            </div>
+            
+            <div class="content-wrapper" style="flex-direction: column;">
+                <div class="top-section" style="display: flex; gap: 20px; flex-wrap: wrap; width: 100%; margin-bottom: 20px;">
+                    <div class="col-left">
+                        
+            <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                <h3 style="margin-top:0; color: #2c3e50; font-size: 16px;">💼 庫存狀態</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 15px;">
+                    <div>買進均價：<b>92.16</b></div>
+                    <div>庫存股數：<b>435</b></div>
+                    <div>預估損益：<b style="color: #e74c3c;">148</b></div>
+                    <div>報酬率：<b style="color: #e74c3c;">0.37%</b></div>
+                </div>
+            </div>
+            
+                        <div class="signals">
+                            <h3 style="margin-top:0;">📋 量化診斷結果</h3>
+                            <div class="signal-item ">⚠️ 【跌破 5日線】短線轉弱，留意停損/停利。</div><div class="signal-item ">💣 【高檔爆量長黑】主力可能出貨，符合停利/停損要件。</div>
+                        </div>
+                    </div>
+                    <div class="col-right" style="display: flex; flex-direction: column; justify-content: center;">
+                        <img class="chart-img" src="charts/3479_chart.png" alt="K線圖">
+                        <p style="text-align:center; font-size:12px; color:#666; margin-top:5px;">藍線: 5MA, 橘線: 10MA, 綠線: 20MA, 紅線: 60MA, 灰線: 200MA</p>
+                    </div>
+                </div>
+                
+                <div class="bottom-section" style="width: 100%;">
+                    <div class="ai-box">
+                        <h3>Gemini 綜合診斷</h3>
+                        <div id="ai-content-3479"></div>
+                        <script>
+                            document.getElementById('ai-content-3479').innerHTML = marked.parse(`根據您提供的「出場條件教學筆記」內容，並綜合安勤 (3479) 的最新技術面、基本面、籌碼面與新聞資訊，對該股票進行綜合診斷與操作建議如下：
+
+### **安勤 (3479) 綜合診斷報告**
+
+**一、 技術面診斷：**
+
+1.  **均線防守法：**
+    *   **短線警訊：** 目前收盤價 92.50 元已跌破 5日均線 93.02 元，符合筆記中「當收盤價跌破『5日均線』，代表短線走弱，可視為短線停損或減碼訊號」的條件。
+    *   **波段支撐：** 收盤價 92.50 元仍位於 10日均線 91.94 元之上，表示波段趨勢尚未被完全破壞。
+    *   **長期趨勢：** 收盤價 92.50 元遠高於季線 (60日線) 89.73 元，且季線斜率向上，代表整體趨勢仍處於多頭格局。
+2.  **量價結構：**
+    *   **高檔爆量長黑：** 最新 K 線為一根帶有大量（639,000 張，遠高於 20日均量 379,303.30 張）的長黑 K 棒。從 K 線圖判斷，此長黑 K 棒的收盤價跌破了近期強勢紅 K 棒的低點，且跌破 5 日均線。這明確符合筆記中「當股價處於高檔或連漲過後，出現『爆量』的『長黑K棒』，這代表想買與想賣的人皆已出盡，且主力大多已出貨完畢，是極為明確的停利訊號」的條件。
+    *   **下跌量增：** 股價下跌，成交量卻放大，顯示賣壓沉重，符合筆記中「下跌量增」的轉弱訊號。
+3.  **程式自動計算訊號：**
+    *   【跌破 5日線】短線轉弱，留意停損/停利。 (已確認)
+    *   【高檔爆量長黑】主力可能出貨，符合停利/停損要件。 (已確認)
+
+**二、 基本面診斷：**
+
+*   **財務數據：** 總市值 67.11 億，本益比 (PE) 15.21，股價淨值比 (PB) 1.99，營收季成長率 7.90%，這些數據顯示公司基本面穩健，估值合理。
+*   **營收動能：** 安勤 2026 年 3 月營收達 8.24 億元，年增 21.52%，創近 6 個月以來新高，累計第一季營收年增 11%。
+*   **產業趨勢與成長引擎：** 公司積極佈局 AI、邊緣運算、智慧醫療、工業自動化等高成長領域。 根據新聞報導，安勤對 2026 年營運展望樂觀，預期全年營收成長率將優於去年的 11.5%，並呈現「前低後高」逐季放大的格局，訂單出貨比 (BB Ratio) 也高達 1.4，顯示需求強勁。 特別在智慧醫療領域，高階伺服器訂單能見度高，且有新產品線（如超音波設備、半導體設備伺服器）持續加入。
+
+**三、 籌碼面診斷：**
+
+*   **資料限制：** 缺乏完整的法人買賣超與股權分散表，無法全面分析籌碼流向。
+*   **新聞提及：** 報導指出近期外資多以賣超為主，主力籌碼先前偏向調節，但近期出現單日大幅買超與價位上攻，顯示短線主導權有從法人轉向短線資金的跡象。 但需注意此資訊的時效性與完整性，並應與技術面賣壓訊號綜合判斷。
+
+**四、 新聞資訊面診斷：**
+
+*   **近期利多：** 近期消息多屬正面，包括推出支援 Intel Twin Lake 處理器的新型嵌入式系統、積極參與國際展會展示 AI 驅動的邊緣運算解決方案、在智慧醫療、工業自動化、智慧零售等領域訂單表現良好。
+*   **無重大突發利空：** 目前並未搜尋到非預期性的重大利空消息。
+
+### **綜合評估與動作建議**
+
+根據「出場條件教學筆記」的紀律與判斷邏輯，安勤 (3479) 目前狀況為：
+
+1.  **長期與基本面強勁：** 公司基本面良好，營收持續成長，且積極佈局 AI、智慧醫療等高成長產業，長期趨勢（季線向上）保持多頭格局，顯示其具備長期投資價值。
+2.  **短期技術面轉弱訊號明確：**
+    *   股價已跌破 5日均線，顯示短線動能轉弱。
+    *   更重要的是，出現了**「高檔爆量長黑 K 棒」**，且伴隨下跌量增。筆記中明確指出此為「極為明確的停利訊號」或「主力出貨，必須減碼或全部出場」的條件，且強調「市場叫你走就要走，毫不猶豫」，應立即執行。
+    *   儘管目前尚未跌破波段停利點 10日均線，但「高檔爆量長黑」的警示強度極高，不容輕忽。
+
+考量筆記中對「高檔爆量長黑」的嚴格停利紀律，即使長期基本面看好，短期內出現主力出貨跡象，仍需優先採取行動保護資本。
+
+**動作建議：** **減碼，並嚴格停利**
+
+**原因：**
+
+*   **尊重主力出貨訊號：** 「高檔爆量長黑」是筆記中定義的「極為明確的停利訊號」，顯示市場短期賣壓沉重，主力資金已有撤出跡象。為了避免短期修正侵蝕獲利，應果斷執行減碼。 [cite: 程式自動計算的技術面量化訊號]
+*   **短線轉弱：** 股價跌破 5日均線，顯示短線動能已轉弱，停止創高並出現向下彎頭的實質轉弱行為。
+*   **保護獲利與風險管理：** 您的成本價 92.16 元與目前收盤價 92.50 元僅微幅獲利。在爆量長黑訊號出現後，若不減碼，可能迅速導致獲利回吐甚至虧損。
+*   **雖波段趨勢未破，但需謹慎：** 雖然 10日均線與季線仍向上，但面對高強度的賣出訊號，應優先減碼以鎖定部分獲利並降低風險，待股價止穩並確認趨勢恢復後再考慮。
+
+**具體操作建議：**
+
+1.  **立即減碼：** 依據「高檔爆量長黑」的明確停利訊號，立即減碼部分持股，降低持倉風險。
+2.  **嚴格停利/停損點：** 將剩餘持股的停利/停損點設定在 **10日均線 91.94 元**。一旦收盤價跌破 10日均線，則應考慮進一步減碼甚至全數出場，因為這將確認波段趨勢被破壞。
+3.  **觀察後續量價：** 密切觀察股價在減碼後的量價表現，若能在 10日均線附近止跌並出現縮量整理或帶量反彈，未來仍有機會。但在目前，優先執行減碼以保護資產。`);
+                        </script>
+                    </div>
+                </div>
+            
+            </div>
+        </div>
+        
+        <div class="card" id="stock-6197">
+            <div class="header">
+                <div class="stock-title">佳必琪 (6197)</div>
+                <div class="price">最新收盤價: 187.50 <span style="font-size: 14px; color: #7f8c8d; font-weight: normal; margin-left: 10px;">(更新時間: 2026-04-23 22:37)</span></div>
+            </div>
+            
+            <div class="content-wrapper" style="flex-direction: column;">
+                <div class="top-section" style="display: flex; gap: 20px; flex-wrap: wrap; width: 100%; margin-bottom: 20px;">
+                    <div class="col-left">
+                        
+            <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                <h3 style="margin-top:0; color: #2c3e50; font-size: 16px;">💼 庫存狀態</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 15px;">
+                    <div>買進均價：<b>179.35</b></div>
+                    <div>庫存股數：<b>220</b></div>
+                    <div>預估損益：<b style="color: #e74c3c;">1,793</b></div>
+                    <div>報酬率：<b style="color: #e74c3c;">4.54%</b></div>
+                </div>
+            </div>
+            
+                        <div class="signals">
+                            <h3 style="margin-top:0;">📋 量化診斷結果</h3>
+                            <div class="signal-item ">💣 【高檔爆量長黑】主力可能出貨，符合停利/停損要件。</div>
+                        </div>
+                    </div>
+                    <div class="col-right" style="display: flex; flex-direction: column; justify-content: center;">
+                        <img class="chart-img" src="charts/6197_chart.png" alt="K線圖">
+                        <p style="text-align:center; font-size:12px; color:#666; margin-top:5px;">藍線: 5MA, 橘線: 10MA, 綠線: 20MA, 紅線: 60MA, 灰線: 200MA</p>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+            <div class="footer">
+                <p>⚠️ 免責聲明：本報告由 AI 輔助產生，僅供學習與參考，不構成任何投資建議，投資人應自負盈虧。</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    
