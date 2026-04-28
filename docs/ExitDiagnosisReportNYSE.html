@@ -1,0 +1,995 @@
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>NYSE Inventory AI Analysis Report</title>
+        <style>
+            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa; margin: 0; padding: 20px; color: #333; display: flex; }
+            .sidebar { width: 220px; position: fixed; top: 20px; left: 20px; background: white; border-radius: 10px; padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-height: 90vh; overflow-y: auto; }
+            .sidebar h2 { font-size: 18px; color: #2c3e50; margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+            .sidebar ul { list-style: none; padding: 0; margin: 0; }
+            .sidebar li { margin-bottom: 8px; }
+            .sidebar a { text-decoration: none; color: #34495e; font-weight: 500; display: block; padding: 5px; border-radius: 4px; transition: background 0.2s; }
+            .sidebar a:hover { background: #eef2f5; color: #0056b3; }
+            .main-content { margin-left: 260px; flex: 1; max-width: 1200px; }
+            h1 { text-align: center; color: #2c3e50; }
+            .card { background: white; border-radius: 10px; padding: 20px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+            .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 15px; }
+            .stock-title { font-size: 24px; font-weight: bold; color: #34495e; }
+            .price { font-size: 20px; font-weight: bold; color: #2ecc71; }
+            .content-wrapper { display: flex; gap: 20px; flex-wrap: wrap; }
+            .col-left { flex: 1; min-width: 300px; }
+            .col-right { flex: 1.5; min-width: 400px; }
+            .signal-item { margin: 5px 0; padding: 10px; background: #fdf2f2; border-left: 4px solid #e74c3c; border-radius: 4px; }
+            .signal-item.safe { background: #f2f9f2; border-left: 4px solid #2ecc71; }
+            .ai-box { background: #f0f7ff; border: 1px solid #cce3f6; border-radius: 8px; padding: 15px; font-size: 15px; line-height: 1.6; }
+            .chart-img { width: 100%; height: auto; border: 1px solid #ddd; border-radius: 4px; display: block; }
+            .footer { text-align: center; margin-top: 40px; color: #7f8c8d; font-size: 14px; margin-bottom: 40px; }
+        </style>
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    </head>
+    <body>
+        <div class="sidebar">
+            <h2>Portfolio Navigator</h2>
+            <ul>
+    <li><a href='#stock-ALAB'>ASTERA LABS INC (ALAB)</a></li><li><a href='#stock-AMD'>ADVANCED MICRO DEVICES (AMD)</a></li><li><a href='#stock-AVGO'>BROADCOM LTD (AVGO)</a></li><li><a href='#stock-AXTI'>AXT INC (AXTI)</a></li><li><a href='#stock-GOOG'>ALPHABET INC-CL C (GOOG)</a></li><li><a href='#stock-MRVL'>MARVELL TECHNOLOGY INC (MRVL)</a></li><li><a href='#stock-MU'>MICRON TECHNOLOGY INC (MU)</a></li><li><a href='#stock-NVDA'>NVIDIA CORP (NVDA)</a></li><li><a href='#stock-OKLO'>OKLO INC (OKLO)</a></li><li><a href='#stock-ZS'>ZSCALER INC (ZS)</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <h1>📊 NYSE/US Stock Inventory AI Diagnosis</h1>
+            <p style="text-align:center; color:#555;">Generated at: 2026-04-28 09:22:36</p>
+    
+        <div class="card" id="stock-ALAB">
+            <div class="header">
+                <div class="stock-title">ASTERA LABS INC (ALAB)</div>
+                <div class="price" style="color: #333;">Current Price: $196.64</div>
+            </div>
+            <div class="content-wrapper" style="flex-direction: column;">
+                <div class="top-section" style="display: flex; gap: 20px; flex-wrap: wrap; width: 100%; margin-bottom: 20px;">
+                    <div class="col-left">
+                        
+            <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                <h3 style="margin-top:0; color: #2c3e50; font-size: 16px;">💼 Portfolio Status</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 15px;">
+                    <div>Avg Cost: <b>$166.64</b></div>
+                    <div>Quantity: <b>25</b></div>
+                    <div>Unrealized P/L: <b style="color: #2ecc71;">$750.03</b></div>
+                    <div>Return Rate: <b style="color: #2ecc71;">18.00%</b></div>
+                </div>
+            </div>
+            
+                        <div class="signals">
+                            <h3 style="margin-top:0;">📋 Analysis Signals</h3>
+                            <div class="signal-item ">⚠️ 【Break below 5MA】Short-term weakness.</div>
+                        </div>
+                    </div>
+                    <div class="col-right">
+                        <img class="chart-img" src="charts/ALAB_nyse_chart.png">
+                    </div>
+                </div>
+                
+                <div class="ai-box">
+                    <h3>✨ AI Comprehensive Diagnosis</h3>
+                    <div id="ai-content-ALAB"></div>
+                    <script>
+                        document.getElementById('ai-content-ALAB').innerHTML = marked.parse(`ASTERA LABS INC (ALAB) 綜合診斷與操作建議
+
+### 一、技術面分析
+
+1.  **K線型態與均線排列：**
+    *   **短線走弱訊號：** 最新收盤價 \$196.64 已跌破5日均線 \$198.61。根據「出場條件教學筆記」，這代表短線走弱，可視為短線停損或減碼訊號。
+    *   **長紅K棒與長黑K棒：** 根據K線圖，近兩日的走勢為一根長綠K棒之後出現一根長紅K棒，但其後又出現一根長黑K棒，且跌破了5日均線。此長黑K棒的跌幅較大，顯示賣壓較重。
+    *   **成交量：** 最新成交量 5,409,528.0 略低於20日均量 5,831,571.40。因此，雖然出現長黑K棒，但並未伴隨「爆量」的狀況，不完全符合「爆量長黑破底」的主力出貨訊號。
+    *   **波段趨勢：** 股價目前仍位於10日均線 (\$185.64)、月線 (\$154.87) 和季線 (\$138.88) 之上，且所有中長期均線皆呈現向上趨勢，特別是季線向上，顯示中長期多頭格局維持良好。
+    *   **壓力與支撐：** 5日均線已由短線支撐轉為壓力。10日均線 \$185.64 為近期重要的波段支撐位。
+
+### 二、基本面分析
+
+1.  **強勁的成長動能：** 公司營收季成長率高達91.80%，顯示其業務擴張迅速。Astera Labs是一家專注於AI基礎設施和連接解決方案的半導體技術公司，其產品整合CXL®、Ethernet、NVLink、PCIe®和UALink™等技術，高度受惠於AI產業的發展。
+2.  **優異的財務表現：** 2025年第四季度營收達到2.706億美元，較去年同期增長91.8%，超越市場預期，並預期2026年第一季度營收介於2.86億至2.97億美元之間。分析師普遍預計公司未來一年每股盈餘將增長52.70%。
+3.  **高估值：** 目前本益比(PE)為162.51，股價淨值比(PB)為24.54，均處於高位。這表明市場對其未來成長抱有極高預期，也使得股價對任何負面消息或未能達到預期的成長數據反應可能較為敏感。
+4.  **潛在毛利率壓力：** 有報告指出，公司預期毛利率將面臨200個基點的逆風，主要由於轉向利潤較低的模組產品以及與Amazon的認股權協議。
+
+### 三、籌碼面分析
+
+1.  **機構持股穩定且有增持：** 機構投資者持有Astera Labs股票的比例約在60.47%至68.26%之間。第一季度有多家大型機構如Y Intercept Hong Kong Ltd、Fjarde AP Fonden Fourth Swedish National Pension Fund、Strs Ohio等增持了股份，亦有新進入的機構投資者，顯示大戶對其前景仍持樂觀態度。
+2.  **內部人賣股警訊：** 內部人（Insiders）在過去90天內累計賣出超過106萬股，其中公司法律顧問Philip Mazzara在4月1日也出售了股份。雖然內部人賣股可能有各種原因，但「出場條件教學筆記」將此視為「籌碼面數據惡化」的警訊之一，需引起投資者關注。
+3.  **分析師共識：** 綜合多家分析機構意見，Astera Labs獲得「強烈買入」或「中性買入」的共識評級。然而，平均目標價約落在目前股價附近或略高，顯示短期上漲空間可能有限。
+
+### 四、新聞資訊與市場影響
+
+1.  **AI主題受追捧：** Astera Labs受益於AI產業的蓬勃發展，其AI基礎設施連接解決方案被視為關鍵技術，獲得市場高度關注。
+2.  **近期股價下跌：** 股價在近期出現大幅下跌，昨日跌幅達-7.61%，可能與市場對其高估值的獲利了結、以及內部人賣股的消息有關。
+3.  **即將發布財報：** Astera Labs將於2026年5月5日收盤後公布2026年第一季度財報，並舉行電話會議。這將是市場檢視其營運狀況和未來展望的重要事件。
+
+### 綜合評估與操作建議
+
+該股票目前呈現中長期多頭趨勢良好，基本面強勁且搭上AI產業順風車。然而，在股價達到相對高位後，出現了短線技術面轉弱訊號（跌破5日均線）和籌碼面警訊（內部人賣股），同時伴隨市場對高估值的謹慎情緒。
+
+根據「出場條件教學筆記」的原則，特別是「訊號一：波段均線跌破」中「等股票不漲了、彎頭向下才賣」以及「指標一：跌破關鍵均線」中「短線停損點：當收盤價跌破『5日均線』，代表短線走弱，可視為短線停損或減碼訊號」。此外，筆記也強調「市場叫你走就要走，毫不猶豫」的紀律。
+
+**操作建議：減碼**
+
+**原因：**
+
+1.  **短線走弱訊號啟動：** 股價收盤價已跌破5日均線，這是明確的短線走弱訊號，符合「出場條件教學筆記」中的減碼條件。
+2.  **高檔獲利了結壓力：** 儘管波段趨勢未破，但在高估值的情況下，股價出現長黑K棒且大幅下跌，可能是市場資金在高檔進行獲利了結的行為，此時減碼可以鎖定部分利潤，避免回檔侵蝕獲利。
+3.  **內部人賣股警訊：** 內部人持續性的賣股行為，雖然可能不代表公司前景惡化，但在多頭市場中也常被視為一個潛在的風險訊號，增加了短期股價的不確定性。
+4.  **保留彈性應對：** 投資者目前持有獲利，減碼部分持股可以降低整體風險曝險，並保留部分資金以觀察後續走勢。若股價能重新站穩5日均線，可考慮將部位加回；若持續弱勢並跌破10日均線，則應考慮進一步停利。
+
+**具體操作：**
+
+建議投資者目前可**減碼1/3至1/2的持股**。若股價持續下跌並**跌破波段均線（10日均線 \$185.64），則應執行波段停利，全部出場。**若股價能迅速站回5日均線並持續走強，剩餘部位可續抱。`);
+                    </script>
+                </div>
+            </div></div>
+        <div class="card" id="stock-AMD">
+            <div class="header">
+                <div class="stock-title">ADVANCED MICRO DEVICES (AMD)</div>
+                <div class="price" style="color: #333;">Current Price: $334.63</div>
+            </div>
+            <div class="content-wrapper" style="flex-direction: column;">
+                <div class="top-section" style="display: flex; gap: 20px; flex-wrap: wrap; width: 100%; margin-bottom: 20px;">
+                    <div class="col-left">
+                        
+            <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                <h3 style="margin-top:0; color: #2c3e50; font-size: 16px;">💼 Portfolio Status</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 15px;">
+                    <div>Avg Cost: <b>$220.47</b></div>
+                    <div>Quantity: <b>10</b></div>
+                    <div>Unrealized P/L: <b style="color: #2ecc71;">$1,141.61</b></div>
+                    <div>Return Rate: <b style="color: #2ecc71;">51.78%</b></div>
+                </div>
+            </div>
+            
+                        <div class="signals">
+                            <h3 style="margin-top:0;">📋 Analysis Signals</h3>
+                            <div class="signal-item safe">✅ No major sell signals triggered.</div>
+                        </div>
+                    </div>
+                    <div class="col-right">
+                        <img class="chart-img" src="charts/AMD_nyse_chart.png">
+                    </div>
+                </div>
+                
+                <div class="ai-box">
+                    <h3>✨ AI Comprehensive Diagnosis</h3>
+                    <div id="ai-content-AMD"></div>
+                    <script>
+                        document.getElementById('ai-content-AMD').innerHTML = marked.parse(`**ADVANCED MICRO DEVICES (AMD) 綜合診斷與操作建議**
+
+根據您提供的「出場條件教學筆記」以及 AMD 的最新數據、K 線圖，並結合近期市場消息面，為您進行綜合診斷與操作建議。
+
+---
+
+### 一、 技術面分析
+
+1.  **均線排列與趨勢判斷：**
+    *   目前股價 \$334.63，遠高於所有短期、波段及長期均線（5MA \$315.14, 10MA \$292.05, 20MA \$257.49, 60MA \$223.05, 200MA \$207.55）。
+    *   均線呈現多頭排列（5MA > 10MA > 20MA > 60MA > 200MA），且季線（60MA）斜率向上，顯示整體趨勢依然強勁，處於多頭格局。
+    *   儘管昨日股價下跌，但仍穩守在 5 日均線之上，尚未觸及短線或波段均線的跌破停損點。
+
+2.  **K 線型態與量價結構：**
+    *   觀察 K 線圖，近期股價呈現急漲，創下波段新高。
+    *   昨日收盤價 \$334.63，跌幅達 -3.79%，且成交量 50368260.0 顯著高於 20 日均量 39643883.00。這是一個**「高檔爆量長黑K棒」**的型態。
+    *   根據「出場條件教學筆記」的「指標二：量價結構出現轉弱/出貨型態」中的「下跌量增」訊號，昨日股價下跌但成交量放大，代表賣壓沉重，跌勢可能持續。
+    *   此外，在「停利」的「訊號二：高檔爆量長黑」中明確指出，當股價處於高檔或連漲過後，出現爆量長黑K棒，是極為明確的停利訊號，暗示主力大多已出貨完畢。
+    *   雖然昨日長黑K棒的低點可能跌破了前一根長紅K棒的低點（需精確判斷前一根K棒開低高收價位，但圖形上看似如此），但**尚未跌破 5 日均線**，因此「爆量長黑破底」的「同時跌破 5 日均線」條件未完全滿足，但其「下跌量增」和「高檔爆量長黑」的警示意義極強。
+
+---
+
+### 二、 基本面分析
+
+1.  **財務數據：**
+    *   總市值：\$545.58 B，屬於大型股。
+    *   本益比 (PE)：128.21074，股價淨值比 (PB)：8.657956，皆處於相對高檔，顯示市場對其成長性有極高的預期。
+    *   營收季成長率：34.10%，展現了強勁的成長動能，部分支持了高本益比的合理性。
+
+---
+
+### 三、 籌碼面分析
+
+1.  **法人動向與股權分散：**
+    *   近期的法人買賣超數據顯示，外資在近期對 AMD 呈現賣超。在過去的五個交易日中，外資有三個交易日賣超，合計賣超約 1085 萬股。這與「出場條件教學筆記」中「若外資買進後未能連續買超、隔天立刻轉為賣超（落跑）」的警訊有所呼應。
+    *   儘管機構投資者在 2024 年第一季度仍是 AMD 的主要買家，其持股比例小幅上升，但前 25 大機構投資者的持股在過去 12 個月略有下降，同時有更多機構投資者（424 家）增加了持股，這可能導致股權分散度增加。股東人數持續增加可能代表籌碼趨於凌亂。
+
+---
+
+### 四、 消息面分析
+
+1.  **AI 趨勢與產品發展：**
+    *   AMD 在 AI 領域的發展是市場關注的焦點，其 MI300X 加速器被市場寄予厚望，被視為 NVIDIA 在 AI 晶片領域的潛在競爭者。AMD 近期確實加大了在 AI 晶片市場的投入，並與微軟等公司合作以強化其 AI 產品線。
+    *   市場普遍預期 AI 相關產品將是 AMD 未來營收增長的重要動力。
+2.  **近期利空消息：**
+    *   儘管長期趨勢樂觀，但近期市場對 AMD 業績預期存在分歧，有分析師下調了其目標價，理由是對其 AI 加速器出貨量和利潤率的擔憂。
+    *   這些擔憂可能導致股價在近期出現調整。
+
+---
+
+### 五、 綜合評估與操作建議
+
+綜合以上技術面、基本面、籌碼面與消息面資訊，儘管 AMD 的基本面成長動能強勁且長期趨勢仍屬多頭，但短線已出現明確的警示訊號。
+
+**診斷結論：**
+
+*   **優勢：** 整體趨勢強勁，均線多頭排列，季線向上，基本面營收成長率高。
+*   **風險：** 股價處於高檔，出現「高檔爆量長黑 K 棒」和「下跌量增」的典型主力出貨或波段轉弱訊號。籌碼面顯示外資近期轉為賣超，且股權分散度有增加的趨勢。市場對 AI 晶片出貨量和利潤率的擔憂也帶來潛在壓力。
+
+根據「出場條件教學筆記」中的停利與停損原則：
+
+*   **停利訊號二：高檔爆量長黑** 已明確觸發，這是極為明確的停利訊號。
+*   **停損指標二：下跌量增** 也已觸發，代表賣壓沉重。
+
+雖然股價尚未跌破 5 日或 10 日均線（「不漲的確認」尚未完全滿足「跌破 5 日/10 日線」），但高檔爆量長黑的型態已是強烈的波段轉弱訊號。
+
+---
+
+**操作建議：減碼**
+
+**具體原因：**
+
+1.  **高檔爆量長黑 K 棒：** 股價在近期大漲後，出現帶有巨量且跌幅較深的長黑 K 棒，這是「出場條件教學筆記」中明確指出的「主力出貨訊號」，應視為波段高點出現的警訊，觸發停利賣出訊號。
+2.  **下跌量增：** 股價下跌伴隨成交量放大，表示賣方力道增強，多方承接意願減弱，短期跌勢可能延續，不宜持股。
+3.  **籌碼面轉弱：** 外資近期轉為賣超，與教學筆記中「外資買進後未能連續買超、隔天立刻轉為賣超（落跑）」的警訊相符。這可能導致籌碼面支撐減弱。
+4.  **獲利回吐壓力：** 考慮到您的成本價 \$220.4687，目前已有顯著獲利。在高檔出現轉弱訊號時，減碼是保護已實現獲利、避免利潤回吐的穩健策略。
+
+**執行紀律：**
+
+根據「絕對紀律一：市場叫你走就要走，毫不猶豫」，當出場訊號（高檔爆量長黑、下跌量增）一觸發，必須立刻執行。雖然目前仍未跌破 5 日均線，但高檔爆量長黑的型態已足以構成減碼理由，以確保資金安全。可以先進行部分減碼，若後續股價進一步跌破 5 日或 10 日均線，則應考慮進一步減碼甚至全部出場。
+
+**注意事項：** 儘管長期 AI 趨勢有利於 AMD，但短期的技術面與籌碼面警訊已非常明確，應優先遵循交易紀律來保護資本。`);
+                    </script>
+                </div>
+            </div></div>
+        <div class="card" id="stock-AVGO">
+            <div class="header">
+                <div class="stock-title">BROADCOM LTD (AVGO)</div>
+                <div class="price" style="color: #333;">Current Price: $418.20</div>
+            </div>
+            <div class="content-wrapper" style="flex-direction: column;">
+                <div class="top-section" style="display: flex; gap: 20px; flex-wrap: wrap; width: 100%; margin-bottom: 20px;">
+                    <div class="col-left">
+                        
+            <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                <h3 style="margin-top:0; color: #2c3e50; font-size: 16px;">💼 Portfolio Status</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 15px;">
+                    <div>Avg Cost: <b>$340.89</b></div>
+                    <div>Quantity: <b>5</b></div>
+                    <div>Unrealized P/L: <b style="color: #2ecc71;">$386.57</b></div>
+                    <div>Return Rate: <b style="color: #2ecc71;">22.68%</b></div>
+                </div>
+            </div>
+            
+                        <div class="signals">
+                            <h3 style="margin-top:0;">📋 Analysis Signals</h3>
+                            <div class="signal-item safe">✅ No major sell signals triggered.</div>
+                        </div>
+                    </div>
+                    <div class="col-right">
+                        <img class="chart-img" src="charts/AVGO_nyse_chart.png">
+                    </div>
+                </div>
+                
+                <div class="ai-box">
+                    <h3>✨ AI Comprehensive Diagnosis</h3>
+                    <div id="ai-content-AVGO"></div>
+                    <script>
+                        document.getElementById('ai-content-AVGO').innerHTML = marked.parse(`針對 BROADCOM LTD (AVGO) 的綜合診斷如下：
+
+### 一、技術面分析
+
+*   **K 線型態與均線排列：** 目前股價 (\$418.20) 仍位於所有關鍵均線之上，包括 5日均線 (\$417.14)、10日均線 (\$406.79)、20日均線 (\$370.20) 和季線 (\$340.39)。均線呈現多頭排列 (5MA > 10MA > 20MA > 60MA > 200MA)，且季線斜率明顯向上，顯示整體趨勢處於強勁上升波段。
+*   **短期走勢：** 雖然最新收盤價較昨日下跌 1.08% 並形成一根紅 K 棒 (指收盤價低於開盤價，但在圖中顯示為紅色)，且股價與 5日均線非常接近，但仍略高於 5日均線。
+*   **量價結構：** 最新成交量 (17,397,609.0) 低於 20日均量 (22,590,785.45)。這表示在股價小幅回落時，並未出現「爆量長黑」或「下跌量增」的轉弱/出貨型態。
+
+根據「出場條件教學筆記」的「停損」與「停利」規則：
+*   **停損點判斷：** 股價目前未跌破 5日均線 (短線停損點)、10日均線 (波段停損點)，亦未跌破季線 (趨勢停損點)。因此，未觸發任何停損訊號。
+*   **停利點判斷：** 股價未跌破 10日均線，也未出現高檔爆量長黑。雖然昨日小幅回檔，但尚未構成「不再創高，且彎頭向下」的實質轉弱行為。
+
+### 二、基本面分析
+
+*   **公司體質與成長性：** Broadcom (AVGO) 總市值高達 \$1.98 兆，為大型權值股。營收季成長率達 29.50%，顯示強勁的營收增長動能。
+*   **獲利能力與估值：** 本益比 (PE) 為 81.679695，股價淨值比 (PB) 為 24.796917，皆屬偏高水準，反映市場對其未來成長的極高預期。然而，其預期本益比 (Forward P/E) 為 36.92，低於行業平均的 48.25，且 PEG Ratio 為 0.76，低於行業平均的 2.62，這表示相對於其高成長率，目前的估值可能被市場合理化甚至低估。
+*   **財務狀況：** 最新財報顯示營業利益與淨利潤均有顯著增長，且自由現金流強勁。
+
+### 三、籌碼面分析
+
+*   **法人動向：** Broadcom 是主要機構投資者 (如 Vanguard、BlackRock) 的核心持倉股。 大多數分析師給予「買入」或「強烈買入」的評級，且目標價仍有上漲空間，顯示法人對其前景保持樂觀態度。
+*   **內部人交易：** 過去六個月內，公司內部人存在大量賣出行為 (1 次買入，211 次賣出)。 這是一個需要留意的警訊，儘管可能出於個人資金規劃考量，但也可能暗示內部人認為股價已處高位。
+*   **股東人數與流通籌碼：** 雖然流通股數略有增加，但目前沒有明確證據顯示「總股東人數持續增加」導致籌碼過度分散於散戶，進而構成嚴重的籌碼面惡化訊號。
+
+### 四、消息面分析
+
+*   **AI 領域的領導地位：** Broadcom 在客製化 AI 晶片和 AI 網路領域扮演關鍵角色，被視為 AI 基礎設施的重要供應商。其 AI 半導體營收在 2026 財年第一季度成長超過一倍，達到 84 億美元，預計第二季度將達到 107 億美元。執行長預期到 2027 年，AI 相關營收將超過 1,000 億美元。
+*   **重要合作夥伴關係：** Broadcom 與 Google Cloud 擴大合作 (包含雲端網路洞察服務與客製化 TPU)，並與 Meta 建立了多年期的 AI 基礎設施夥伴關係。此外，還與 Anthropic 簽訂了高達 210 億美元的 AI 晶片大單，預計 2027 年可能增至 420 億美元。 這些合作案為公司帶來了明確且長期的營收可見度。
+*   **企業轉型：** 繼 2023 年收購 VMware 後，Broadcom 已成功轉型為平衡的「基礎設施技術」巨頭，業務涵蓋半導體和基礎設施軟體兩大領域。
+*   **市場共識：** 分析師普遍給予「買入」或「強烈買入」的評級，且 Zacks 將其評為 #1 (強力買入) 股票。
+
+### 綜合診斷與操作建議
+
+綜合上述分析，BROADCOM LTD (AVGO) 目前處於一個基本面極為強勁、受惠於 AI 浪潮的成長股態勢。技術面上，股價維持在所有關鍵均線之上，呈現明確的多頭排列，且尚未觸發「出場條件教學筆記」中的任何停損或停利訊號。雖然股價在近期高檔出現小幅回落並接近 5日均線，但成交量並未異常放大，內部人賣出是潛在警訊，但主流法人持股仍高且對公司前景樂觀。
+
+**最終操作建議：續抱 (Hold)**
+
+**原因解釋：**
+1.  **趨勢未破，續抱為上策：** 根據「出場條件教學筆記」中的「訊號一：波段均線跌破」與「絕對紀律二：好的股票會照顧自己，嚴禁提早下車」，只要股價未跌破 10日均線，波段獲利單就應該續抱。目前收盤價 \$418.20 仍明顯高於 10日均線 \$406.79。
+2.  **基本面強勁，消息面利多：** Broadcom 在 AI 領域的領導地位、龐大的 AI 相關營收預期以及與科技巨頭的長期合作關係，為股價提供了堅實的支撐和成長動能。強勁的營收與獲利成長，也合理化了其相對較高的估值。
+3.  **量價結構健康：** 雖然股價近日小幅回落，但未出現爆量長黑或下跌量增等出貨訊號，顯示賣壓尚不沉重。
+4.  **法人共識偏多：** 大多數法人與分析師仍看好公司前景，維持買入評級。
+
+**風險提示與監控重點：**
+*   由於股價已接近 5日均線，投資者應密切關注股價是否會跌破 5日均線，若跌破可能代表短線走弱，可視為短線減碼訊號。
+*   嚴格遵守波段停利原則：一旦收盤價明確跌破 **10日均線**，即觸發波段停利賣出訊號，應毫不猶豫執行停利。
+*   持續留意內部人交易動向與籌碼流向，以及 AI 產業的整體變化或任何可能影響 Broadcom 業務的突發利空消息。`);
+                    </script>
+                </div>
+            </div></div>
+        <div class="card" id="stock-AXTI">
+            <div class="header">
+                <div class="stock-title">AXT INC (AXTI)</div>
+                <div class="price" style="color: #333;">Current Price: $70.15</div>
+            </div>
+            <div class="content-wrapper" style="flex-direction: column;">
+                <div class="top-section" style="display: flex; gap: 20px; flex-wrap: wrap; width: 100%; margin-bottom: 20px;">
+                    <div class="col-left">
+                        
+            <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                <h3 style="margin-top:0; color: #2c3e50; font-size: 16px;">💼 Portfolio Status</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 15px;">
+                    <div>Avg Cost: <b>$74.01</b></div>
+                    <div>Quantity: <b>36</b></div>
+                    <div>Unrealized P/L: <b style="color: #e74c3c;">$-139.10</b></div>
+                    <div>Return Rate: <b style="color: #e74c3c;">-5.22%</b></div>
+                </div>
+            </div>
+            
+                        <div class="signals">
+                            <h3 style="margin-top:0;">📋 Analysis Signals</h3>
+                            <div class="signal-item ">⚠️ 【Break below 5MA】Short-term weakness.</div><div class="signal-item ">🚨 【Break below 10MA】Trend broken, consider exit.</div>
+                        </div>
+                    </div>
+                    <div class="col-right">
+                        <img class="chart-img" src="charts/AXTI_nyse_chart.png">
+                    </div>
+                </div>
+                
+                <div class="ai-box">
+                    <h3>✨ AI Comprehensive Diagnosis</h3>
+                    <div id="ai-content-AXTI"></div>
+                    <script>
+                        document.getElementById('ai-content-AXTI').innerHTML = marked.parse(`綜合診斷 AXT INC (AXTI) 目前的技術面、基本面、籌碼面與新聞資訊，並參考「出場條件教學筆記」，給予持有該股票的投資者以下建議：
+
+### AXT INC (AXTI) 綜合診斷
+
+**1. 技術面診斷：**
+*   **K線型態與均線排列：** 最新交易日收盤價為 \$70.15，相較於前一日大跌 -7.89%，形成一根明確的長黑K棒。股價已跌破短期均線 (5MA: \$76.70) 和波段均線 (10MA: \$75.68) [cite: Break below 5MA, Break below 10MA]。從K線圖觀察，5日均線已下彎並可能將穿越10日均線，顯示短線和波段趨勢皆已轉弱。儘管股價仍位於月線 (20MA: \$65.04) 和季線 (60MA: \$47.14) 之上，且季線方向仍向上，顯示長期趨勢未立即轉空，但短中期動能已嚴重喪失。
+*   **壓力與支撐：** 股價跌破了近期在 \$75-\$80 附近的整理區間下緣，下一個較為明確的技術支撐可能落在月線附近 (\$65.04)。
+*   **成交量：** 最新成交量為 9,876,494.0，低於20日均量 15,030,479.70。雖然並非「爆量」長黑，但伴隨大幅下跌的成交量仍屬相對較高，顯示存在一定的賣壓。
+
+**2. 基本面診斷：**
+*   **財務表現：** 該公司目前本益比為未知 (實際為負值，MarketBeat 數據顯示為 -158.66)，股價淨值比高達 13.929707，顯示其估值相對較高。營收季成長率為 -8.20%，且公司持續處於淨虧損狀態 (2025財年淨虧損 \$21.3 百萬美元)。
+*   **產業趨勢與產品：** AXT INC 是半導體材料科學公司，主要生產用於AI運算、資料中心互連與矽光子學等應用領域的磷化銦 (Indium Phosphide) 等複合半導體晶圓基板。市場對AI相關應用需求強勁，公司也計劃大幅擴充磷化銦產能以滿足需求，並擁有 \$60 百萬美元的積壓訂單。
+
+**3. 籌碼面診斷：**
+*   **股權分散：** 截至2025年12月，散戶投資者持有公司約 58% 的股權，機構投資者持有約 28%。較高的散戶持股比例可能導致籌碼相對凌亂，不利於股價持續上漲。
+*   **法人與內部人動向：** 儘管部分機構投資者近期有增持動作，但在過去90天內，包括執行長在內的內部人出現了大量的賣股行為 (超過 \$21 百萬美元的股票賣出)。內部人賣股通常被視為一個重要的負面訊號。
+
+**4. 新聞資訊診斷：**
+*   **近期利多：** 公司受益於AI和光學通訊領域對磷化銦晶圓的強勁需求，預期2026年第一季度營收將實現連續增長。公司也剛完成一筆高達 \$632.5 百萬美元的公開募資，以擴大產能和用於研發。
+*   **近期利空與風險：**
+    *   **股權稀釋：** 大規模的公開募資導致顯著的股權稀釋，對股價造成壓力。
+    *   **出口許可證：** 中國出口許可證的延遲問題，在過去曾影響公司出貨和營收。
+    *   **估值過高：** 儘管有AI題材，但公司目前仍處於虧損，且市場給予的估值（如高P/B、高P/S）偏高。部分分析師的平均目標價遠低於現價，暗示巨大的下行風險。
+
+### 綜合評估與操作建議
+
+根據「出場條件教學筆記」的邏輯，AXT INC (AXTI) 目前已觸發多個停損/停利訊號，並伴隨顯著的籌碼面警訊。
+
+**1. 技術面警訊明確：** 股價已明確跌破「5日均線」和「10日均線」。依據教學筆記，「當收盤價跌破『5日均線』，代表短線走弱，可視為短線停損或減碼訊號」；「當收盤價跌破『10日均線』，代表波段趨勢已被破壞，應執行波段出場」 [cite: rule 1]。此外，股價從高檔回落，不再創高且彎頭向下，亦符合停利賣出訊號 [cite: rule 2]。
+**2. 籌碼面惡化：** 內部人近期的大量賣股行為是極為重要的警訊，符合教學筆記中「大戶/外資動向轉空」的判斷，暗示內部人對股價看法趨於保守 [cite: rule 1, 17]。
+**3. 股權稀釋與高估值風險：** 雖然公司透過募資強化了資金，但同時也導致股權稀釋，且在公司仍未實現盈利的情況下，目前的股價估值顯著偏高，分析師目標價普遍較低，存在潛在回調風險。
+
+考量到您目前已處於虧損狀態 (成本價 \$74.014，現價 \$70.15)，且多重出場訊號已被觸發，尤其是技術面的波段趨勢被破壞和籌碼面的內部人賣股警訊，建議應當機立斷。
+
+**動作建議：嚴格停損或大幅減碼**
+
+**具體原因：**
+*   **波段趨勢已破壞：** 股價跌破10日均線，依照教學筆記屬於波段出場訊號，不可猶豫 [cite: rule 1, rule 2]。
+*   **內部人賣股警訊：** 內部人的大筆賣出，無論公司長期前景如何，短期內都對股價造成壓力，並傳達出潛在的負面訊息 [cite: rule 1, 17]。
+*   **高估值回歸：** 在股權稀釋和公司持續虧損的背景下，市場對AI題材的追捧可能導致股價超漲，一旦動能減弱，回調風險大。
+
+依照「出場條件教學筆記」中「絕對紀律一：市場叫你走就要走，毫不猶豫」的原則，當出場訊號觸發時，應立刻執行，以避免更大的損失。您可以考慮先大幅減碼部分持股，以降低風險並安撫情緒，然後觀察市場後續發展，但務必設定嚴格的停損點。`);
+                    </script>
+                </div>
+            </div></div>
+        <div class="card" id="stock-GOOG">
+            <div class="header">
+                <div class="stock-title">ALPHABET INC-CL C (GOOG)</div>
+                <div class="price" style="color: #333;">Current Price: $348.52</div>
+            </div>
+            <div class="content-wrapper" style="flex-direction: column;">
+                <div class="top-section" style="display: flex; gap: 20px; flex-wrap: wrap; width: 100%; margin-bottom: 20px;">
+                    <div class="col-left">
+                        
+            <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                <h3 style="margin-top:0; color: #2c3e50; font-size: 16px;">💼 Portfolio Status</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 15px;">
+                    <div>Avg Cost: <b>$321.69</b></div>
+                    <div>Quantity: <b>11</b></div>
+                    <div>Unrealized P/L: <b style="color: #2ecc71;">$295.13</b></div>
+                    <div>Return Rate: <b style="color: #2ecc71;">8.34%</b></div>
+                </div>
+            </div>
+            
+                        <div class="signals">
+                            <h3 style="margin-top:0;">📋 Analysis Signals</h3>
+                            <div class="signal-item safe">✅ No major sell signals triggered.</div>
+                        </div>
+                    </div>
+                    <div class="col-right">
+                        <img class="chart-img" src="charts/GOOG_nyse_chart.png">
+                    </div>
+                </div>
+                
+                <div class="ai-box">
+                    <h3>✨ AI Comprehensive Diagnosis</h3>
+                    <div id="ai-content-GOOG"></div>
+                    <script>
+                        document.getElementById('ai-content-GOOG').innerHTML = marked.parse(`**ALPHABET INC-CL C (GOOG) 綜合診斷與操作建議**
+
+根據您提供的「出場條件教學筆記」規則、ALPHABET INC-CL C (GOOG) 的最新技術面數值、基本面、籌碼面與新聞資訊，綜合診斷如下：
+
+---
+
+### 一、 技術面分析
+
+1.  **均線排列與防守：**
+    *   目前收盤價 \$348.52 顯著高於所有關鍵均線：5日均線 (\$339.36)、10日均線 (\$336.94)、20日均線 (\$319.32)、季線 (\$312.29) 和年線 (\$277.38)。
+    *   所有短期、中期、長期均線呈現多頭排列 (5MA > 10MA > 20MA > 60MA > 200MA)，且季線 (\$312.29) 向上延伸，顯示股價處於強勁的上升趨勢。
+    *   根據「出場條件教學筆記」的「均線防守法」，目前股價並未跌破任何關鍵均線，因此未觸發任何短線、波段或趨勢停損訊號。
+
+2.  **K線型態與量價結構：**
+    *   從K線圖觀察，該股票自三月底以來呈現穩步上漲趨勢，持續創出波段新高，最近的K棒為陽線，顯示買方力道仍在。
+    *   成交量 \$17,346,132.0 略高於20日均量 \$16,808,021.60，顯示市場交易活絡且有量能支撐漲勢。
+    *   未觀察到「爆量長黑K棒」吞噬前一根紅棒低點，或股價下跌時成交量不縮反增的「下跌量增」等轉弱或出貨型態。
+
+3.  **壓力與支撐：**
+    *   目前股價處於上升通道中，5日及10日均線構成近期強力支撐，分別為 \$339.36 和 \$336.94。
+    *   由於股價持續創高，上方未見明顯套牢壓力區。
+
+### 二、 基本面分析
+
+1.  **財務表現：**
+    *   Alphabet 在2024年第一季度財報表現強勁，營收達805.4億美元，年增15%，超出市場預期。每股盈餘 (EPS) 為1.89美元，大幅超越預期的1.50美元，年增61.5%。
+    *   營收季成長率達18.00%，顯示公司營運成長動能強勁。
+    *   總市值達到 \$4.22 T，本益比 (PE) 為32.21，股價淨值比 (PB) 為10.14，這些數據對於成長型科技巨頭而言，反映了市場對其未來成長的期待。
+
+2.  **產業趨勢與AI發展：**
+    *   Alphabet CEO Sundar Pichai 強調公司正處於「Gemini時代」，在AI研究和基礎設施方面具有領先地位，將其視為下一波AI創新的關鍵。
+    *   Google Cloud 業務在第一季度營收達95.7億美元，年增28%，其中AI貢獻日益增加，並獲得美國國防部採用 Gemini for Government 模型，顯示其AI技術在企業級應用中獲得驗證。
+    *   Google Cloud 承諾投入7.5億美元基金，加速合作夥伴的AI發展，進一步推動其在AI領域的生態系統擴張。
+    *   YouTube 廣告收入達80.9億美元，年增21%，訂閱服務收入也呈現強勁成長。
+
+3.  **股東回報：**
+    *   Alphabet 董事會已批准啟動現金股利計劃，並宣布每股派發0.20美元的現金股利，預計於2024年6月17日支付。此舉將吸引更多尋求穩定回報的投資者。
+
+### 三、 籌碼面分析
+
+1.  **法人動向：**
+    *   儘管缺乏詳細的股權分散表或法買賣超數據，但近期新聞報導指出，分析師普遍對 Alphabet 持「強烈買入」或「買入」建議，平均目標價介於 \$350.25 至 \$378.50 之間，隱含潛在的上漲空間。
+    *   市場上也有關於機構投資者增持AI基礎設施相關股票的報導，Alphabet 作為AI領導者，預計也會受到青睞。
+    *   目前沒有跡象顯示「大戶/外資動向轉空」或出現「持續賣超」的情況。
+2.  **股東人數：**
+    *   沒有直接數據顯示「總股東人數」持續增加或籌碼流向散戶。但在強勁基本面和利多消息下，籌碼應保持相對穩定或集中於看好後市的投資者手中。
+
+### 四、 新聞資訊
+
+1.  **利多消息：**
+    *   2024年第一季度財報超出預期，主要業務板塊（搜尋、YouTube、雲端）均表現強勁。
+    *   大力投入AI（Gemini），並在多個產品和服務中整合AI功能，市場看好其AI發展潛力。
+    *   首次宣布派發季度現金股利，此舉對提升股東信心和吸引長期投資者具有正面意義。
+2.  **潛在利空：**
+    *   歐盟數位市場法案 (DMA) 可能會迫使 Google 開放其Android應用程式和功能供競爭對手AI存取，若最終決定不利，可能面臨高額罰款。然而，這是一個仍在審議中的潛在風險，目前尚未構成「非預期性的重大利空」並導致股價跌破關鍵線。
+
+---
+
+### 綜合評估與動作建議
+
+ALPHABET INC-CL C (GOOG) 目前呈現強勁的多頭走勢，各項指標均表現良好：
+
+*   **技術面：** 股價呈現多頭排列，站穩所有重要均線之上，並持續創高，未見轉弱訊號。
+*   **基本面：** 財報表現亮眼，核心業務成長強勁，尤其在AI領域的佈局和成果顯著，且宣布派發股利，基本面非常穩健。
+*   **籌碼面：** 分析師給予高度評價，顯示市場對其前景樂觀，未見籌碼惡化跡象。
+*   **新聞面：** 近期多為正面消息，支撐股價上漲。
+
+根據「出場條件教學筆記」的邏輯，目前沒有任何停損或停利訊號被觸發。股價維持在5日均線之上，並持續創高，符合「好的股票會照顧自己，嚴禁提早下車」的原則。
+
+**最終操作建議：續抱**
+
+**具體原因：**
+
+1.  **強勁多頭趨勢：** 股價位於所有關鍵均線之上，且均線呈現多頭排列，季線方向向上，表明整體趨勢非常健康，未出現任何技術面上的轉弱或停損訊號。
+2.  **基本面優異：** 最新季度財報表現超出市場預期，營收和獲利能力均展現強勁成長動能，特別是AI相關業務的發展潛力巨大，為股價提供堅實支撐。
+3.  **新興股利政策：** 首次宣布派發現金股利，有助於吸引更多長期投資者，提升股票的投資價值和穩定性。
+4.  **未觸發停利條件：** 股價持續創高，且未跌破10日均線，也未出現高檔爆量長黑等主力出貨訊號，符合「等待賣出訊號」的停利原則。
+
+**投資者應持續密切關注股價是否跌破5日或10日均線，或出現爆量長黑K棒等轉弱訊號，並留意歐盟DMA相關法案的後續發展。在這些訊號出現之前，應耐心持有，讓獲利持續奔跑。**`);
+                    </script>
+                </div>
+            </div></div>
+        <div class="card" id="stock-MRVL">
+            <div class="header">
+                <div class="stock-title">MARVELL TECHNOLOGY INC (MRVL)</div>
+                <div class="price" style="color: #333;">Current Price: $158.21</div>
+            </div>
+            <div class="content-wrapper" style="flex-direction: column;">
+                <div class="top-section" style="display: flex; gap: 20px; flex-wrap: wrap; width: 100%; margin-bottom: 20px;">
+                    <div class="col-left">
+                        
+            <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                <h3 style="margin-top:0; color: #2c3e50; font-size: 16px;">💼 Portfolio Status</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 15px;">
+                    <div>Avg Cost: <b>$95.90</b></div>
+                    <div>Quantity: <b>27</b></div>
+                    <div>Unrealized P/L: <b style="color: #2ecc71;">$1,682.39</b></div>
+                    <div>Return Rate: <b style="color: #2ecc71;">64.98%</b></div>
+                </div>
+            </div>
+            
+                        <div class="signals">
+                            <h3 style="margin-top:0;">📋 Analysis Signals</h3>
+                            <div class="signal-item ">⚠️ 【Break below 5MA】Short-term weakness.</div>
+                        </div>
+                    </div>
+                    <div class="col-right">
+                        <img class="chart-img" src="charts/MRVL_nyse_chart.png">
+                    </div>
+                </div>
+                
+                <div class="ai-box">
+                    <h3>✨ AI Comprehensive Diagnosis</h3>
+                    <div id="ai-content-MRVL"></div>
+                    <script>
+                        document.getElementById('ai-content-MRVL').innerHTML = marked.parse(`綜合考量 Marvell Technology Inc. (MRVL) 的最新技術面、基本面、籌碼面與新聞資訊，並依據「出場條件教學筆記」的邏輯，以下為您的綜合診斷與操作建議：
+
+### **MARVELL TECHNOLOGY INC (MRVL) 綜合診斷**
+
+1.  **技術面分析：短線走弱，波段趨勢仍強勁**
+    *   **K線型態：** 最新交易日出現一根較長的紅K棒（陰線），且收盤價為 \$158.21，跌幅達 -3.71%，顯示當日賣壓較重，股價在高檔出現回落。
+    *   **均線排列：**
+        *   **短線警訊：** 收盤價 \$158.21 已跌破「5日均線」(\$159.34)，符合教學筆記中「短線走弱，可視為短線停損或減碼訊號」的條件。
+        *   **波段趨勢未破：** 股價仍維持在「10日均線」(\$148.60) 之上，且所有中長期均線 (10MA, 20MA, 60MA, 200MA) 均呈現多頭排列，並持續向上揚升。特別是「季線(60日線)」(\$99.19) 方向明確向上，顯示其長期上升趨勢依然非常強勁，波段趨勢尚未被破壞。
+    *   **量價結構：** 當日成交量 (29,254,191.0) 略低於20日均量 (31,346,979.55)。雖然非嚴格意義上的「爆量」，但高檔出現帶量下跌的長黑K棒，且股價未能再創新高並向下彎頭，符合教學筆記中「不漲的確認」的停利訊號，表明高檔有獲利了結的壓力。
+
+2.  **基本面分析：成長動能強勁，聚焦AI前景光明**
+    *   **營收與獲利：** MRVL 最新財報表現亮眼，Q4 FY2026 EPS 達 \$0.80，超出分析師預期 12.68%，營收達 \$2.22 billion，年增 22.1%。 Fiscal 2026 全年營收更創紀錄達 \$8.195 billion，年增 42%，主要由強勁的 AI 需求驅動。
+    *   **AI 策略佈局：** 公司積極投入 AI 基礎設施領域，近期宣布收購 Polariton Technologies，以強化其光學技術組合，進一步擴展在 AI 和雲端數據中心互連方面的領導地位。此外，市場傳聞 MRVL 正與 Google 洽談合作開發 AI 晶片，以及與 NVIDIA 的合作關係，都突顯其在 AI 領域的巨大成長潛力。
+    *   **估值：** 目前本益比 (PE) 51.53 和股價淨值比 (PB) 9.37 偏高，反映市場對其高成長前景的預期。部分分析師認為當前股價可能已充分反映利多，甚至存在潛在的下行風險。
+
+3.  **籌碼面分析：法人青睞，內部人賣股需留意**
+    *   **法人動向：** 機構投資者持股比例高達 83.51%，且近期有多家機構增持 MRVL 股份，顯示法人對其長期成長前景具備信心。
+    *   **內部人動向：** 近期有內部人進行賣股，過去三個月內出售價值約 \$26.2 百萬美元的股票。雖然多數賣股是為了支付行使股票選擇權後的稅務義務，這在教學筆記中仍被列為「停損警訊」，需持續關注。
+    *   **籌碼流向：** 無直接數據顯示總股東人數變化以判斷籌碼是否流向散戶。
+
+4.  **新聞資訊：利多不斷，支撐股價上漲動能**
+    *   近期關於收購、優異財報、AI 合作傳聞及分析師上調目標價等利多消息頻傳，強力支撐了股價的上升動能。
+    *   關於取消 Poet Technologies 訂單的訊息，雖然對 Poet 是利空，但對 Marvell 而言是因對方違約所致，並未直接影響其核心業務發展。
+
+### **動作建議：續抱，並設嚴格波段停利點**
+
+考量您目前持有成本為 \$95.8993，而目前收盤價為 \$158.21，已有顯著獲利。
+
+**明確、簡潔的動作建議：續抱，但若收盤價跌破 10 日均線（\$148.60），則應執行波段停利。**
+
+**解釋原因：**
+
+1.  **波段趨勢強勁，符合「續抱」條件：** 儘管股價已跌破5日均線，觸發短線減碼訊號，但 MRVL 的中長期均線（10MA, 20MA, 60MA, 200MA）仍維持多頭排列且向上揚升，顯示強勁的波段上升趨勢尚未被破壞。根據教學筆記「只要股價未跌破10日線，或未跌破上升軌道的趨勢線，波段獲利單就應該續抱」的原則，您的核心波段部位應持續持有。
+2.  **基本面與 AI 前景提供堅實支撐：** MRVL 在 AI 數據基礎設施領域的戰略地位、亮麗的財報表現和未來增長預期，為其股價提供了堅實的基本面支撐。強大的產業趨勢和公司競爭力符合「好的股票會照顧自己，嚴禁提早下車」的紀律。
+3.  **設立明確波段停利點，避免獲利回吐：** 股價已出現「不再創高，且彎頭向下」（跌破5日線）的停利訊號，表示短線高點已出現。為了保護豐厚的波段獲利，應將「跌破10日均線」(\$148.60) 作為「波段停利點」的量化條件。若收盤價跌破此關鍵均線，代表波段趨勢轉弱，應果斷執行停利，避免獲利大幅回吐。
+4.  **內部人賣股與高估值風險：** 雖然多數內部人賣股是因稅務考量，但仍提醒投資者市場存在獲利了結壓力。同時，目前偏高的估值也增加了股價調整的風險。因此，設立明確的停利點至關重要。
+
+**操作建議的核心邏輯是：在強勢趨勢中，耐心持有以放大獲利，但一旦趨勢轉弱（跌破波段關鍵均線），則毫不猶豫地執行停利，堅守「市場叫你走就要走」的絕對紀律。**`);
+                    </script>
+                </div>
+            </div></div>
+        <div class="card" id="stock-MU">
+            <div class="header">
+                <div class="stock-title">MICRON TECHNOLOGY INC (MU)</div>
+                <div class="price" style="color: #333;">Current Price: $524.56</div>
+            </div>
+            <div class="content-wrapper" style="flex-direction: column;">
+                <div class="top-section" style="display: flex; gap: 20px; flex-wrap: wrap; width: 100%; margin-bottom: 20px;">
+                    <div class="col-left">
+                        
+            <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                <h3 style="margin-top:0; color: #2c3e50; font-size: 16px;">💼 Portfolio Status</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 15px;">
+                    <div>Avg Cost: <b>$393.53</b></div>
+                    <div>Quantity: <b>9</b></div>
+                    <div>Unrealized P/L: <b style="color: #2ecc71;">$1,179.27</b></div>
+                    <div>Return Rate: <b style="color: #2ecc71;">33.30%</b></div>
+                </div>
+            </div>
+            
+                        <div class="signals">
+                            <h3 style="margin-top:0;">📋 Analysis Signals</h3>
+                            <div class="signal-item safe">✅ No major sell signals triggered.</div>
+                        </div>
+                    </div>
+                    <div class="col-right">
+                        <img class="chart-img" src="charts/MU_nyse_chart.png">
+                    </div>
+                </div>
+                
+                <div class="ai-box">
+                    <h3>✨ AI Comprehensive Diagnosis</h3>
+                    <div id="ai-content-MU"></div>
+                    <script>
+                        document.getElementById('ai-content-MU').innerHTML = marked.parse(`MICRON TECHNOLOGY INC (MU) 綜合診斷報告
+
+---
+
+### **綜合診斷**
+
+MICRON TECHNOLOGY INC (MU) 目前正處於一個極為強勁的上升趨勢中，無論從技術面、基本面、籌碼面與新聞資訊來看，均呈現出高度樂觀的格局。
+
+**1. 技術面分析：**
+*   **K線型態與均線排列：** 根據提供的K線圖與數值，MU 的最新收盤價 \$524.56 遠高於所有短期（5日均線 \$487.97）、波段（10日均線 \$472.25）、月線（20日均線 \$427.35）、季線（60日均線 \$414.24）及年線（200日均線 \$268.84）。所有均線呈現明確的多頭排列，且均線斜率皆向上，特別是短線與波段均線呈現陡峭上升，顯示股價動能強勁。最新的K線為一根強勢長綠K棒，代表買盤積極，股價持續創高。
+*   **壓力與支撐：** 目前股價處於歷史高位或近期高位，上方無顯著壓力區。下方則有各期均線提供堅實支撐，其中5日均線與10日均線是近期最重要的短線與波段防守點。
+*   **量價結構：** 最新成交量 38,228,158.0 雖略低於20日均量 44,902,997.90，但股價是在長綠K棒中上漲，並未出現「爆量長黑破底」或「下跌量增」等轉弱訊號。這表明買氣持續，但尚未達到過熱爆量追高的階段。
+*   **出場條件比對：**
+    *   **停損訊號（跌破關鍵均線、量價轉弱）：** 目前所有停損條件均未觸發。股價未跌破5日、10日或季線，且季線方向仍向上。無爆量長黑或下跌量增型態。
+    *   **停利訊號（波段均線跌破、高檔爆量長黑、不漲的確認）：** 股價仍在5日均線之上運行並創高，未跌破10日均線，也未出現高檔爆量長黑K棒或「不再創高，且彎頭向下」的實質轉弱行為。
+
+**2. 基本面分析：**
+*   **成長性：** Micron 的營收季成長率高達 196.30%，顯示其業績正爆炸性成長。公司在2026財年第二季度（Q2 2026）的財報表現出色，每股盈餘（EPS）達到 \$12.20，遠超分析師預期的 \$8.60；營收為 \$23.86 億，也大幅超越預期的 \$19.15 億。公司對Q3 2026的財測也極為樂觀，預計營收介於 \$32.75 億至 \$34.25 億，EPS 介於 \$18.75 至 \$19.55。
+*   **獲利能力與估值：** 本益比（PE）24.731731 和股價淨值比（PB）8.16601。儘管 PB 值偏高，但考量其高成長率以及在AI驅動的記憶體市場中的領先地位，市場給予較高估值是合理的。毛利率也有顯著提升。
+*   **產業趨勢：** Micron 處於由人工智慧（AI）驅動的記憶體超級循環中心。其高頻寬記憶體（HBM）需求激增，公司已宣布2026年的HBM產能已全數售罄，且訂單能見度延伸至2027年。Nvidia 計畫在新一代 GPU 中採用 Micron 的 HBM4 解決方案，進一步鞏固其市場地位。AI帶來的結構性需求變化，使其業務的週期性影響減弱，轉向更持久的成長。
+
+**3. 籌碼面分析：**
+*   **法人持股：** 機構投資者（如Vanguard、BlackRock）仍是 Micron 的主要持有者，整體持股比例高達80-89%。
+*   **分析師共識：** 華爾街分析師普遍給予「強烈買入」或「買入」評級。許多分析師近期紛紛上調目標價，有些甚至預期可達 \$700-\$852，甚至 \$1000-\$1200。
+*   **籌碼穩定性：** 儘管有早期報導提及部分機構投資者在2025年底至2026年初有戰術性減持，但隨後強勁的業績和產業前景已抵銷這些擔憂，並無「籌碼流向散戶」導致股價難以表現的跡象。
+
+**4. 新聞資訊分析：**
+*   **重大利多：**
+    *   **業績亮眼：** Q2 2026 財報大超預期，Q3 財測強勁，反映公司基本面加速好轉。
+    *   **AI記憶體領導地位：** HBM 產能至2026年已全數售罄，凸顯其在 AI 記憶體市場的關鍵作用與強大需求。
+    *   **政策助益：** 公司積極遊說美國國會推動「MATCH Act」，旨在收緊對中國晶片製造設備的出口管制，此舉有望進一步提升 Micron 的競爭優勢和市場份額。
+*   **潛在風險已獲緩解：** 雖然曾有關於PC市場疲軟和記憶體產業週期性的擔憂，但強勁的AI需求和公司優異的執行力已使其擺脫傳統記憶體週期的束縛，轉向結構性成長。
+
+---
+
+### **操作建議：續抱 (Continue Holding)**
+
+**具體原因如下：**
+
+1.  **完全未觸發停損/停利條件（依據教學筆記）：**
+    *   **無停損訊號：** 股價目前遠高於所有關鍵均線，未跌破5日、10日或季線，且季線趨勢向上，無爆量長黑或下跌量增等技術面轉弱訊號。
+    *   **無停利訊號：** 股價持續創高，未跌破10日均線，也未出現高檔爆量長黑K棒或「不再創高，且彎頭向下」的實質轉弱行為。根據「出場條件教學筆記」中強調的「右側交易」原則，只要未出現明確的賣出訊號，就應續抱。
+2.  **基本面超級強勁，AI趨勢為長期動能：** Micron 憑藉其在HBM領域的領先地位，成為AI產業浪潮的核心受惠者。公司業績爆炸性增長，未來展望極為樂觀，訂單能見度高，顯示其成長動能可望持續多年。
+3.  **市場普遍看好，支撐股價：** 分析師的強烈買入評級和不斷上調的目標價，以及法人資金的高度集中，都反映出市場對 Micron 未來的增長潛力充滿信心，有利於股價維持強勢。
+4.  **符合「絕對紀律二：好的股票會照顧自己，嚴禁提早下車」：** 在強勢股不斷創高且未出現轉弱訊號時，過早出場將錯失後續漲幅。目前 Micron 正是此類股票，投資者應抱緊手中部位，耐心等待明確的賣出訊號出現。
+
+**建議：** 投資者應繼續持有 Micron (MU) 的股票，並密切關注股價是否出現跌破5日或10日均線，以及是否在高檔出現爆量長黑K棒等明確的轉弱訊號。在此之前，建議耐心持有，讓獲利持續成長。`);
+                    </script>
+                </div>
+            </div></div>
+        <div class="card" id="stock-NVDA">
+            <div class="header">
+                <div class="stock-title">NVIDIA CORP (NVDA)</div>
+                <div class="price" style="color: #333;">Current Price: $216.61</div>
+            </div>
+            <div class="content-wrapper" style="flex-direction: column;">
+                <div class="top-section" style="display: flex; gap: 20px; flex-wrap: wrap; width: 100%; margin-bottom: 20px;">
+                    <div class="col-left">
+                        
+            <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                <h3 style="margin-top:0; color: #2c3e50; font-size: 16px;">💼 Portfolio Status</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 15px;">
+                    <div>Avg Cost: <b>$167.67</b></div>
+                    <div>Quantity: <b>30</b></div>
+                    <div>Unrealized P/L: <b style="color: #2ecc71;">$1,468.13</b></div>
+                    <div>Return Rate: <b style="color: #2ecc71;">29.19%</b></div>
+                </div>
+            </div>
+            
+                        <div class="signals">
+                            <h3 style="margin-top:0;">📋 Analysis Signals</h3>
+                            <div class="signal-item safe">✅ No major sell signals triggered.</div>
+                        </div>
+                    </div>
+                    <div class="col-right">
+                        <img class="chart-img" src="charts/NVDA_nyse_chart.png">
+                    </div>
+                </div>
+                
+                <div class="ai-box">
+                    <h3>✨ AI Comprehensive Diagnosis</h3>
+                    <div id="ai-content-NVDA"></div>
+                    <script>
+                        document.getElementById('ai-content-NVDA').innerHTML = marked.parse(`根據您提供的「出場條件教學筆記」以及NVIDIA (NVDA) 的最新數據，以下是綜合診斷與操作建議：
+
+### NVIDIA (NVDA) 綜合診斷報告
+
+#### 1. 技術面分析
+
+*   **K線型態與均線排列：**
+    *   從K線圖觀察，目前股價呈現明顯的上升趨勢，近期連續多根實體紅K棒，顯示買盤強勁。
+    *   收盤價 \$216.61 遠高於所有短期、波段及長期均線（5MA: \$205.38, 10MA: \$202.44, 20MA: \$190.84, 60MA: \$185.41, 200MA: \$183.09）。
+    *   均線呈現完美的「多頭排列」（5MA > 10MA > 20MA > 60MA > 200MA），且所有均線皆呈向上趨勢，尤其是季線（60MA）斜率明顯向上，代表整體趨勢非常強勁。
+*   **量價結構：**
+    *   目前成交量（184,868,860）高於20日均量（150,473,638.00），且是在股價上漲時出現量增，符合「價漲量增」的健康多頭走勢，顯示有資金持續追捧。
+    *   沒有出現爆量長黑K棒且跌破前低的情況，也無下跌量增的跡象。
+*   **壓力與支撐：**
+    *   目前股價持續創高，上方壓力不明顯。
+    *   下方的5日均線（\$205.38）和10日均線（\$202.44）可視為短線及波段的強力支撐。季線（\$185.41）則為重要的趨勢支撐。
+
+#### 2. 基本面分析
+
+*   **成長性：** 營收季成長率高達 73.20%，顯示公司業務處於高速成長階段。
+*   **估值：** 本益比 (PE) 44.296524 和股價淨值比 (PB) 33.46879 相對較高，反映市場對其未來成長性有高度期待，目前仍被視為成長股。
+
+#### 3. 籌碼面分析
+
+*   目前沒有提供詳細的籌碼數據，但從強勁的股價表現和量價結構判斷，市場買盤積極。
+*   基於「出場條件教學筆記」中提到「大戶/外資動向轉空」和「籌碼流向散戶」是警訊，若無此類數據，難以全面評估。但若股價能持續強勢上攻，通常意味著主力籌碼穩定。
+
+#### 4. 新聞與產業趨勢
+
+*   **AI發展核心：** NVIDIA是AI晶片領域的領導者，其GPU產品在AI訓練和推論方面具有關鍵地位。隨著全球AI需求持續爆發，NVIDIA直接受惠於這一趨勢。
+*   **近期利多：**
+    *   NVIDIA的Blackwell平台和B200 AI晶片在GTC 2024大會上發表，被認為是「地球上最強大的晶片」，預計將大幅提升AI運算能力，並已獲得包括亞馬遜、谷歌、Meta和微軟等主要客戶的訂單。
+    *   分析師普遍上調NVIDIA的目標價，看好其在AI基礎設施建構中的核心角色和未來增長潛力。
+    *   市場對其未來業績預期樂觀，認為其AI晶片需求在可預見的未來將保持強勁。
+*   **無重大突發利空：** 目前沒有發現非預期性的重大利空消息。
+
+#### 5. 綜合評估與操作建議
+
+綜合上述分析，NVIDIA (NVDA) 目前處於非常強勁的多頭趨勢中：
+
+*   **技術面：** 股價呈現完美的多頭排列，價漲量增，所有均線均向上，且股價大幅領先均線，沒有任何出場訊號觸發。
+*   **基本面：** 營收高速成長，反映其在AI產業的領導地位和強勁需求。
+*   **消息面：** 近期發布新一代AI晶片並獲得大客戶支持，市場看好情緒高漲，無明顯利空。
+*   **出場條件檢視：** 根據「出場條件教學筆記」的各項停損/停利指標，目前NVIDIA皆未觸發任何賣出訊號。股價持續創高，且維持在5日及10日均線之上，並無「不漲的確認」或「高檔爆量長黑」等訊號。
+
+**操作建議：續抱**
+
+**原因：**
+
+1.  **趨勢極為強勁：** 股價呈現完美的多頭排列，且持續創歷史新高，顯示市場資金認同度極高。季線（60日線）向上，代表整體趨勢健康向上。
+2.  **未觸發任何出場訊號：** 根據教學筆記，目前股價未跌破任何關鍵均線（5日線、10日線），也未出現爆量長黑K棒、下跌量增或不創高轉弱的跡象。
+3.  **基本面與消息面支撐：** NVIDIA作為AI產業核心供應商，受惠於AI浪潮，基本面成長強勁，近期新產品發表和分析師看好也持續為股價提供上漲動能。
+4.  **遵守「嚴禁提早下車」紀律：** 課程強調「好的股票會照顧自己，嚴禁提早下車」。只要股價維持在5日線之上或未跌破10日線，就應耐心等待賣出訊號，不可因心理壓力而輕易出清。
+
+**後續觀察重點：**
+
+*   密切關注收盤價是否跌破5日均線（短線轉弱警訊）或10日均線（波段走弱警訊）。
+*   留意是否出現高檔爆量長黑K棒。
+*   追蹤NVIDIA的最新新聞和法人籌碼動向。
+
+在任何賣出訊號出現之前，建議保持續抱，讓獲利持續奔跑。`);
+                    </script>
+                </div>
+            </div></div>
+        <div class="card" id="stock-OKLO">
+            <div class="header">
+                <div class="stock-title">OKLO INC (OKLO)</div>
+                <div class="price" style="color: #333;">Current Price: $75.93</div>
+            </div>
+            <div class="content-wrapper" style="flex-direction: column;">
+                <div class="top-section" style="display: flex; gap: 20px; flex-wrap: wrap; width: 100%; margin-bottom: 20px;">
+                    <div class="col-left">
+                        
+            <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                <h3 style="margin-top:0; color: #2c3e50; font-size: 16px;">💼 Portfolio Status</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 15px;">
+                    <div>Avg Cost: <b>$81.48</b></div>
+                    <div>Quantity: <b>23</b></div>
+                    <div>Unrealized P/L: <b style="color: #e74c3c;">$-127.63</b></div>
+                    <div>Return Rate: <b style="color: #e74c3c;">-6.81%</b></div>
+                </div>
+            </div>
+            
+                        <div class="signals">
+                            <h3 style="margin-top:0;">📋 Analysis Signals</h3>
+                            <div class="signal-item safe">✅ No major sell signals triggered.</div>
+                        </div>
+                    </div>
+                    <div class="col-right">
+                        <img class="chart-img" src="charts/OKLO_nyse_chart.png">
+                    </div>
+                </div>
+                
+                <div class="ai-box">
+                    <h3>✨ AI Comprehensive Diagnosis</h3>
+                    <div id="ai-content-OKLO"></div>
+                    <script>
+                        document.getElementById('ai-content-OKLO').innerHTML = marked.parse(`## OKLO INC (OKLO) 綜合診斷與操作建議
+
+### 一、 技術面分析
+
+*   **K線型態與均線排列：**
+    OKLO股價在近期展現強勁的上升趨勢。從K線圖來看，股價在4月初突破盤整區後，連續出現多根長紅K棒，顯示買盤積極。最新的收盤價 \$75.93 遠高於短線 (5MA \$71.68)、波段 (10MA \$67.95) 和月線 (20MA \$58.42)，且這些短期均線已呈現多頭排列 (5MA > 10MA > 20MA)，表示短中期趨勢非常強勢。
+    值得注意的是，股價也已經突破了季線 (60MA \$61.77)。然而，季線本身的斜率目前仍是向下，這在「出場條件教學筆記」中被視為「趨勢走空（生命線斷裂）」的警示，但由於股價已站上季線，且短期均線多頭排列，顯示空方趨勢有所扭轉，但長期趨勢仍需觀察季線能否翻揚向上。
+    年線 (200MA \$86.16) 仍位於股價上方，可能在未來構成一定的壓力。
+
+*   **量價結構：**
+    最新成交量為 17,332,629.0 股，顯著高於20日均量 13,879,936.45 股，呈現「價漲量增」的健康多頭格局。這表明股價的上漲有成交量的配合，買盤力道強勁，與「出場條件教學筆記」中「下跌量增」的賣壓訊號相反，是多頭表現。
+    目前未出現「爆量長黑破底」的轉弱型態。
+
+### 二、 基本面分析
+
+*   **市值與估值：**
+    OKLO的總市值達到 \$13.21 B。本益比 (PE) 顯示為未知 (Unknown)，股價淨值比 (PB) 為 8.255954。較高的PB比可能反映市場對其未來成長的預期，但也需留意估值是否偏高。由於營收季成長率也未知，難以從這些基本面數據直接判斷其營運狀況或成長潛力，需要進一步研究其業務模式和財務報告。
+
+### 三、 籌碼面分析
+
+*   **法人動向與股權分散：**
+    根據近期報導，OKLO INC作為一家迷你核反應爐（microreactor）開發商，在2024年5月10日完成了與AltC Acquisition Corp.的業務合併，並於紐約證券交易所（NYSE）上市交易。AltC是一家由Sam Altman贊助的特殊目的收購公司（SPAC）。 這種透過SPAC上市的公司，其籌碼結構和法人持股可能會在初期有較大的波動。
+    近期有報導指出，OKLO被分析師評為「強烈買入」（Strong Buy）等級，並給予目標價 \$25。 儘管此目標價遠低於目前股價，這可能暗示市場對其長期潛力有不同看法，或者在SPAC合併後的估值產生了顯著變化。
+    關於「大戶/外資動向轉空」或「籌碼流向散戶」的具體數據（如持股分散表、法人買賣超、總股東人數變化），在公開資訊中較難取得細緻的即時數據。然而，近期的大量成交和股價上漲，暗示有資金進場。未來需持續觀察法人買賣超數據，特別是合併後的初期表現，以判斷籌碼是否穩定。
+
+### 四、 新聞與消息面分析
+
+*   **重要利多/利空消息：**
+    OKLO INC是一家核能科技公司，專注於開發先進的裂變反應爐，特別是迷你核反應爐。這類技術被視為清潔能源的未來方向之一。
+    近期最重要的消息是其於2024年5月10日完成SPAC合併並正式在紐約證券交易所上市，股票代碼為OKLO。 此次上市為公司籌集了資金，預計將用於加速其商業化部署迷你核反應爐。 這是公司發展的重要里程碑，通常會在上市初期吸引市場關注和資金追捧。
+    市場對OKLO的評價褒貶不一。有分析師給予「強烈買入」評級，但目標價較低。 另有消息指出，Sam Altman參與的SPAC交易導致投資者權益遭到嚴重稀釋，且一些大型投資者選擇退出。 此外，OKLO在上市前一天（5月9日）股價經歷了大幅波動，在盤中一度飆升至 \$253，但收盤時暴跌至 \$53，顯示市場對其估值存在劇烈分歧和投機性炒作。 目前提供的收盤價 \$75.93 (於 2026年4月28日)，與上市初期 \$53 的收盤價相比，已有顯著漲幅。
+
+### 五、 綜合評估與操作建議
+
+根據「出場條件教學筆記」的各項指標與綜合分析：
+
+1.  **技術面強勁，但長期均線仍有隱憂：** 目前股價處於強勢上漲格局，短期均線多頭排列，價漲量增，未觸發任何技術面停損或停利訊號。然而，季線方向仍向下，雖然股價已站上季線，但這點在教學筆記中是長期趨勢走空的警示，需留意季線能否止跌翻揚。
+2.  **基本面缺乏透明度，估值待觀察：** 由於缺乏具體的本益比、營收成長率等數據，目前難以從基本面給予強勁支撐或警示。較高的PB比可能反映了市場對未來前景的預期。
+3.  **籌碼面波動較大，需謹慎追蹤：** 考慮到SPAC上市的特性和上市初期股價的劇烈波動，籌碼面的穩定性可能較差。雖然有分析師看好，但市場對估值分歧較大，需密切關注法人買賣超和股東人數變化，以判斷籌碼是否流向散戶或大戶是否持續出貨。
+4.  **消息面有利多有隱憂：** 作為核能新創，上市是重要里程碑，但SPAC合併過程中存在的稀釋問題以及上市初期股價的劇烈波動，顯示市場對其未來發展和真實價值的看法仍不一致，存在較高的不確定性。
+
+**結論：**
+目前OKLO在技術面上表現強勢，股價站穩所有短期均線，且價漲量增，符合「續抱」的條件。然而，其基本面數據不完整，籌碼面波動較大，且季線仍呈向下趨勢，暗示長期風險尚未完全解除。考慮到上市初期股價曾出現極端波動，以及SPAC交易的潛在稀釋效應，其背後隱含的不確定性較高。
+
+**操作建議：續抱，但需嚴格監控停利點**
+
+**原因：**
+
+1.  **未觸發停利條件：** 股價目前仍維持在5日均線和10日均線之上，並未出現「跌破10日均線」、「高檔爆量長黑」或「不再創高且彎頭向下」等停利訊號。根據「出場條件教學筆記」，只要股價未跌破10日線，波段獲利單就應該續抱。
+2.  **短中期趨勢強勁：** 均線呈現多頭排列，價漲量增，顯示市場買盤積極，短中期上漲動能持續。
+3.  **潛在不確定性仍存：** 雖然短期表現強勁，但季線方向向下仍是長期趨勢的警示。且考慮到公司剛上市不久，基本面數據不夠透明，過往的股價波動也較大，其估值存在爭議，需要提高警覺。
+
+**具體操作紀律：**
+
+*   **嚴格執行波段停利：** 密切關注股價是否跌破 **10日均線 (\$67.95)**。一旦收盤價跌破10日均線，應立即執行停利賣出，確認相對高點已經出現且波段走弱。
+*   **警惕高檔爆量長黑：** 若股價在高檔出現「爆量長黑K棒」，且吞噬前一根長紅棒或跌破前一根長紅K棒的低點，應視為主力出貨訊號，必須減碼或全部出場。
+*   **關注季線變化：** 儘管股價已站上季線，但其向下斜率仍是長期趨勢的隱憂。若未來季線未能翻揚向上，且股價再次跌破季線，需高度警惕。
+*   **留意消息面：** 持續追蹤公司是否有新的利多或利空消息，特別是關於核能產業政策、技術進展或財務狀況的更新。
+
+總體而言，目前應遵守「好的股票會照顧自己，嚴禁提早下車」的紀律，耐心等待賣出訊號出現。但同時也要抱持警惕，嚴格執行停利策略，避免將獲利吐回。`);
+                    </script>
+                </div>
+            </div></div>
+        <div class="card" id="stock-ZS">
+            <div class="header">
+                <div class="stock-title">ZSCALER INC (ZS)</div>
+                <div class="price" style="color: #333;">Current Price: $134.11</div>
+            </div>
+            <div class="content-wrapper" style="flex-direction: column;">
+                <div class="top-section" style="display: flex; gap: 20px; flex-wrap: wrap; width: 100%; margin-bottom: 20px;">
+                    <div class="col-left">
+                        
+            <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                <h3 style="margin-top:0; color: #2c3e50; font-size: 16px;">💼 Portfolio Status</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 15px;">
+                    <div>Avg Cost: <b>$211.08</b></div>
+                    <div>Quantity: <b>8</b></div>
+                    <div>Unrealized P/L: <b style="color: #e74c3c;">$-615.78</b></div>
+                    <div>Return Rate: <b style="color: #e74c3c;">-36.47%</b></div>
+                </div>
+            </div>
+            
+                        <div class="signals">
+                            <h3 style="margin-top:0;">📋 Analysis Signals</h3>
+                            <div class="signal-item ">⚠️ 【Break below 5MA】Short-term weakness.</div><div class="signal-item ">🚨 【Break below 10MA】Trend broken, consider exit.</div><div class="signal-item ">💀 【Death Cross/MA60 Down】Strong sell signal!</div>
+                        </div>
+                    </div>
+                    <div class="col-right">
+                        <img class="chart-img" src="charts/ZS_nyse_chart.png">
+                    </div>
+                </div>
+                
+                <div class="ai-box">
+                    <h3>✨ AI Comprehensive Diagnosis</h3>
+                    <div id="ai-content-ZS"></div>
+                    <script>
+                        document.getElementById('ai-content-ZS').innerHTML = marked.parse(`ZS (ZSCALER INC) 股票診斷報告
+
+根據您提供的「出場條件教學筆記」、股票基本資訊、技術面數據以及K線圖，茲將 ZS 股票進行綜合診斷，並給予操作建議。
+
+### 一、技術面分析
+
+1.  **均線系統概況：**
+    *   目前收盤價 \$134.11，已明確跌破短期均線 (5MA \$136.97) 及波段均線 (10MA \$134.23)。
+    *   收盤價遠低於月線 (20MA \$133.87) 和季線 (60MA \$152.18)。
+    *   季線 (60MA) 方向明確向下，顯示中長期趨勢疲弱。
+    *   年線 (200MA \$236.79) 更是高高在上，且呈現明顯向下趨勢，整體均線呈現空頭排列，壓力沉重。
+    *   您的成本價 \$211.0826 遠高於所有短期、波段及中長期均線，目前處於大幅度虧損狀態。
+
+2.  **K線型態與量價結構：**
+    *   K線圖顯示，股價在經過一段時間的盤整後，於三月底至四月初出現明顯下跌，並數次跌破短期均線。
+    *   最近一根K線為實體較小的長黑K棒，且收盤價跌破了5日與10日均線。
+    *   成交量：近期成交量低於20日均量 (2035522.0 vs 2928011.10)，顯示下跌時量能縮小，目前賣壓相對緩和，但也意味著買方追價意願不足。然而，在3月底至4月初的明顯下跌期間，曾出現放量下跌的情況，顯示當時有較大的賣壓。
+    *   支撐與壓力：過去的盤整區間下緣約在 \$140-\$145 附近，目前股價已跌破此區間，該區域已轉為壓力區。下方短期未見明顯強支撐。
+
+3.  **自動計算技術訊號綜合判斷：**
+    *   **【Break below 5MA】Short-term weakness.** (短線走弱) - **已觸發。**
+    *   **【Break below 10MA】Trend broken, consider exit.** (波段趨勢破壞) - **已觸發。**
+    *   **【Death Cross/MA60 Down】Strong sell signal!** (趨勢走空，絕對停損訊號) - **已觸發。** 季線彎頭向下，且股價已跌破季線甚久。
+
+### 二、基本面與籌碼面分析
+
+1.  **基本面：**
+    *   總市值：\$21.56 B。
+    *   本益比 (PE)：未知，難以判斷估值高低。
+    *   股價淨值比 (PB)：9.806231，屬於相對偏高的水平，表明市場對其成長性仍有一定預期，但也可能存在估值風險。
+    *   營收季成長率：25.90%，表現尚可，顯示公司業務仍有增長。
+    *   然而，在高估值背景下，如果成長性未能持續超越市場預期，股價容易承壓。
+
+2.  **籌碼面：**
+    *   目前提供的資訊有限，無法判斷「大戶/外資動向轉空」或「籌碼流向散戶」等具體籌碼惡化訊號。僅知「主要法人籌碼摘要：Detailed data available via search.」若能取得進一步的法人持股變化與股東人數增減，將有助於更全面的判斷。
+
+### 三、新聞資訊綜合分析
+
+根據最新資訊搜尋：
+Zscaler (ZS) 是一家提供雲端網路安全服務的公司。
+
+*   **近期營收與展望：**
+    Zscaler 最近一次財報（截至 2024 年 1 月 31 日的第二財季）顯示營收年增 35% 至 5.247 億美元，超出分析師預期，並上調了全年財測。然而，儘管營收增長，但公司在雲端網路安全領域面臨激烈的競爭，且在財報後的分析師會議中，對其營收增長和盈利能力的質疑聲浪仍存，導致股價波動。
+*   **AI 發展：**
+    Zscaler 積極將人工智慧（AI）整合到其安全平台中，例如推出 Zscaler Zero Trust Exchange 平台上的 AI 驅動服務，旨在提升安全防護能力，特別是在資料保護和威脅偵測方面。這符合產業趨勢，且被視為其未來增長潛力之一。
+*   **市場反應與挑戰：**
+    儘管 Zscaler 的產品和市場地位被認為具備長期增長潛力，但市場對其高估值和盈利能力仍持謹慎態度。在最近的財報電話會議上，對於其營收增長速度放緩和對宏觀經濟逆風的擔憂，可能是導致股價承壓的原因之一。
+*   **分析師評級：**
+    部分分析師對 Zscaler 持樂觀態度，認為其是雲端安全領域的領導者，但也有分析師指出其股價波動性和競爭壓力。
+
+### 四、綜合判斷與操作建議
+
+根據「出場條件教學筆記」的規則，ZSCALER INC (ZS) 目前的狀況已觸發多項停損訊號：
+
+1.  **技術面極度弱勢：** 股價已跌破5日、10日均線，且更重要的是，收盤價遠低於季線 (60MA)，並且季線斜率明顯向下。這符合「出場條件教學筆記」中「趨勢停損點（絕對停損）」和「波段停損點」的定義，代表整個趨勢已走空，生命線斷裂。
+2.  **成本價與現價嚴重偏離：** 您的成本價 \$211.0826 遠高於目前股價 \$134.11，虧損幅度巨大。雖然不應因固定百分比停損，但當趨勢明顯轉空且跌破關鍵防線時，應果斷執行。
+3.  **量價結構：** 雖然最新一根K線並非「爆量長黑破底」，但觀察K線圖在三月底至四月初下跌過程中，曾出現較大成交量的長黑K棒，顯示有明顯賣壓。
+4.  **消息面：** 雖然公司在業務增長和AI整合方面有正面消息，但市場對其高估值和盈利能力的擔憂，以及競爭壓力，導致股價未能獲得有效支撐。目前的消息面並未強勁到足以扭轉技術面的頹勢。
+
+**根據「出場條件教學筆記」的「絕對紀律一：市場叫你走就要走，毫不猶豫」以及「最高優先順序：遇到非預期利空結合技術面破線，立即啟動逃命機制」的原則，這檔股票已經發出明確的出場訊號。**
+
+### 最終操作建議：
+
+**嚴格停損，全數出場。**
+
+**原因：**
+
+1.  **多重技術停損訊號同時觸發：** 股價不僅跌破了短線的5日和波段的10日均線，更重要的是，已長期跌破「季線（60日線）」，且季線方向明確向下，這是「出場條件教學筆記」中定義的「趨勢停損點（絕對停損）」訊號。這代表整體趨勢已轉為空頭，不應再抱持。
+2.  **趨勢結構被破壞：** 均線呈現空頭排列，股價持續在主要均線下方運行，且尚未看到築底或反轉的跡象。
+3.  **嚴重虧損且無反彈跡象：** 您的持股成本遠高於現價，雖然已承受巨大虧損，但目前的技術面顯示跌勢可能尚未結束，若繼續持有，潛在風險仍高。
+4.  **市場紀律要求：** 「出場條件教學筆記」強調，只要出場訊號（跌破5日/10日線、跌破季線）一觸發，必須立即執行，不可猶豫。目前的狀況完全符合這一紀律要求。
+
+基於上述綜合判斷，儘管 Zscaler 在業務上可能仍有潛力，但在技術面已徹底轉弱，且市場已明確給出出場訊號的情況下，應堅守紀律，避免進一步的損失。
+
+---
+**引用來源：**
+ Zscaler (ZS) Gains on Q2 Earnings & Upbeat Guidance, Competition Rife. Yahoo Finance. Retrieved from https://finance.yahoo.com/news/zscaler-zs-gains-q2-earnings-135800045.html
+ Zscaler (ZS) Rises After Q2 Earnings Beat, Q3 Revenue Guidance Misses. Investing.com. Retrieved from https://www.investing.com/news/stock-market-news/zscaler-zs-rises-after-q2-earnings-beat-q3-revenue-guidance-misses-432SI-3315848
+ Zscaler reports better-than-expected Q2 results, raises guidance; stock edges down. Seeking Alpha. Retrieved from https://seekingalpha.com/news/4069818-zscaler-reports-betterthanexpected-q2-results-raises-guidance-stock-edges-down
+ Zscaler Extends AI-Driven Data Protection to Stop Data Loss and Maximize Business Productivity. Business Wire. Retrieved from https://www.businesswire.com/news/home/20240306138612/en/Zscaler-Extends-AI-Driven-Data-Protection-to-Stop-Data-Loss-and-Maximize-Business-Productivity
+ Zscaler: The AI-Driven Growth Story Continues. Seeking Alpha. Retrieved from https://seekingalpha.com/article/4685362-zscaler-ai-driven-growth-story-continues`);
+                    </script>
+                </div>
+            </div></div>
+            <div class="footer">
+                <p>⚠️ Disclaimer: This AI-generated report is for reference only and does not constitute investment advice.</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    
