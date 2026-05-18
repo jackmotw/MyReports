@@ -59,7 +59,7 @@ class GoodinfoScraper:
             decoded_url = urllib.parse.unquote(url)
             sheet = ""
             sheet2 = ""
-            path = "StockListRank/StockList.asp"
+            path = "StockList.asp"
             
             if "EPS" in decoded_url:
                 sheet = "季獲利能力"
@@ -70,7 +70,7 @@ class GoodinfoScraper:
             elif "三大法人連買" in decoded_url:
                 sheet = "法人買賣_三大"
                 sheet2 = "法人連買連賣統計(日)"
-                path = "StockListPick/StockList.asp"
+                path = "StockList.asp"
             elif "週成交日均張" in decoded_url or "成交張數" in decoded_url:
                 sheet = "漲跌及成交統計"
                 sheet2 = "歷史排名及創近期新高新低(週)"
