@@ -1,26 +1,14 @@
 [
     {
-        "stockNo": "2404",
-        "stockName": "漢唐"
-    },
-    {
-        "stockNo": "2882",
-        "stockName": "國泰金"
-    },
-    {
-        "stockNo": "2344",
-        "stockName": "華邦電"
-    },
-    {
         "stockNo": "2881",
         "stockName": "富邦金"
     },
     {
-        "stockNo": "6223",
-        "stockName": "旺矽"
-    },
-    {
         "stockNo": "2408",
         "stockName": "南亞科"
+    },
+    {
+        "stockNo": "5864",
+        "stockName": "致和證"
     }
 ]
